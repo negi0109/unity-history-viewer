@@ -1,8 +1,8 @@
-using System;
 using System.Diagnostics;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+using System.Text;
+
 public static class GitCommandUtil
 {
     private static string gitPath = null;
@@ -38,6 +38,7 @@ public static class GitCommandUtil
             UseShellExecute = false,
             CreateNoWindow = false,
             RedirectStandardOutput = true,
+            StandardOutputEncoding = Encoding.UTF8,
             Arguments = arguments,
             FileName = GetGitPath(),
         };
