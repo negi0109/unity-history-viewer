@@ -1,9 +1,12 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameObjectHistoryWindow : EditorWindow
 {
-    private GameObject target;
+    private GameObject _target;
+    private Scene _currentScene;
+
 
     [MenuItem("Histories/GameObject")]
     private static void CreateWindow()
@@ -13,16 +16,16 @@ public class GameObjectHistoryWindow : EditorWindow
 
     public void OnGUI()
     {
-        // 初期化処理
-        if (target != Selection.activeTransform?.gameObject && Selection.activeTransform?.gameObject != null)
+        // ゲームオブジェクトの選択
+        if (_target != Selection.activeTransform?.gameObject && Selection.activeTransform?.gameObject != null)
         {
-            Debug.Log($"Selection: {target} -> {Selection.activeObject}");
-            target = Selection.activeTransform?.gameObject;
+            Debug.Log($"Selection: {_target} -> {Selection.activeObject}");
+            _target = Selection.activeTransform?.gameObject;
         }
 
-        if (target != null)
+        if (_target != null)
         {
-            EditorGUILayout.LabelField(target.name);
+            EditorGUILayout.LabelField(_target.name);
         }
         else
         {
@@ -30,8 +33,19 @@ public class GameObjectHistoryWindow : EditorWindow
         }
     }
 
+    private void InitScene()
+    {
+        _currentScene = SceneManager.GetActiveScene();
+        Debug.Log(_currentScene.path);
+        Debug.Log(GitCommandUtil.ExecGitCommand($"log -n 30 --pretty=\" % H % x09 % s\" -- {_currentScene.path}"));
+        Repaint();
+    }
+
     private void Update()
     {
-        if (target != Selection.activeTransform?.gameObject) Repaint();
+        var currentScene = SceneManager.GetActiveScene();
+
+        if (!currentScene.Equals(_currentScene)) InitScene();
+        if (_target != Selection.activeTransform?.gameObject) Repaint();
     }
 }

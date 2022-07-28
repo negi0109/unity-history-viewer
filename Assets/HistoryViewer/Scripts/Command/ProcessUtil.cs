@@ -2,18 +2,11 @@ using System.Diagnostics;
 
 public static class ProcessUtil
 {
-    public static string ExecProcess(string command)
+    public static string ExecProcess(ProcessStartInfo psi)
     {
-        var ps = new ProcessStartInfo(command)
-        {
-            UseShellExecute = false,
-            CreateNoWindow = false,
-            RedirectStandardOutput = true,
-        };
-
         using var proc = new Process()
         {
-            StartInfo = ps,
+            StartInfo = psi,
         };
 
         proc.Start();
