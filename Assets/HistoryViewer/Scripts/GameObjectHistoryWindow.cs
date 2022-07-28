@@ -4,8 +4,17 @@ using UnityEngine.SceneManagement;
 
 public class GameObjectHistoryWindow : EditorWindow
 {
+    private class UnityLogger : ILogger
+    {
+        public void Log(string text)
+        {
+            Debug.Log(text);
+        }
+    }
+
     private GameObject _target;
     private Scene _currentScene;
+    private SceneGit _sceneGit;
 
 
     [MenuItem("Histories/GameObject")]
@@ -36,8 +45,10 @@ public class GameObjectHistoryWindow : EditorWindow
     private void InitScene()
     {
         _currentScene = SceneManager.GetActiveScene();
-        Debug.Log(_currentScene.path);
-        Debug.Log(GitCommandUtil.ExecGitCommand($"log -n 30 --pretty=\" % H % x09 % s\" -- {_currentScene.path}"));
+
+        _sceneGit = new SceneGit(new GitCommandUtil.GitCommandExector(), _currentScene.path, new UnityLogger());
+        _sceneGit.LoadGitHistory();
+
         Repaint();
     }
 
