@@ -46,7 +46,7 @@ public static class GitCommandUtil
         return ProcessUtil.ExecProcess(psi);
     }
 
-    public class GitCommandExector : IGitCommandExector
+    public class GitCommandExecutor : IGitCommandExecutor
     {
         public string ExecGitCommand(string arguments)
         {

@@ -1,9 +1,7 @@
 {
-    "name": "Scripts",
+    "name": "GitHistory",
     "rootNamespace": "",
-    "references": [
-        "GitHistory"
-    ],
+    "references": [],
     "includePlatforms": [
         "Editor"
     ],

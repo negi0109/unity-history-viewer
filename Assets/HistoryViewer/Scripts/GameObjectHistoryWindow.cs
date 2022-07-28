@@ -46,7 +46,7 @@ public class GameObjectHistoryWindow : EditorWindow
     {
         _currentScene = SceneManager.GetActiveScene();
 
-        _sceneGit = new SceneGit(new GitCommandUtil.GitCommandExector(), _currentScene.path, new UnityLogger());
+        _sceneGit = new SceneGit(new GitCommandUtil.GitCommandExecutor(), _currentScene.path, new UnityLogger());
         _sceneGit.LoadGitHistory();
 
         Repaint();
