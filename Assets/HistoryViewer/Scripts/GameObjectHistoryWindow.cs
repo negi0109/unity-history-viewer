@@ -14,7 +14,7 @@ public class GameObjectHistoryWindow : EditorWindow
     public void OnGUI()
     {
         // 初期化処理
-        if (target != Selection.activeTransform?.gameObject)
+        if (target != Selection.activeTransform?.gameObject && Selection.activeTransform?.gameObject != null)
         {
             Debug.Log($"Selection: {target} -> {Selection.activeObject}");
             target = Selection.activeTransform?.gameObject;
