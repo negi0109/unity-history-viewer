@@ -1,9 +1,8 @@
 public class SceneGit
 {
-    private static int logMax = 30;
-    private IGitCommandExecutor _git;
-    private ILogger _logger = new ILogger.NoLogger();
-    private string _scenePath;
+    private readonly IGitCommandExecutor _git;
+    private readonly ILogger _logger = new ILogger.NoLogger();
+    private readonly string _scenePath;
 
     public SceneGit(IGitCommandExecutor gce, string scenePath, ILogger logger = null)
     {
@@ -15,8 +14,7 @@ public class SceneGit
 
     public void LoadGitHistory()
     {
-        var history = _git.ExecGitCommand($"log -n {logMax} --pretty=\"%H%x09%s\" -- {_scenePath}");
-        _logger.Log(history);
-
+        var loader = new GitLogLoader(_scenePath, _git, _logger);
+        var commits = loader.Load();
     }
 }
