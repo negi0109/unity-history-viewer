@@ -24,7 +24,7 @@ namespace Negi0109.HistoryViewer.Editors
             // ゲームオブジェクトの選択
             if (_target != Selection.activeTransform?.gameObject)
             {
-                Debug.Log($"Selection: {_target} -> {Selection.activeObject}");
+                // Debug.Log($"Selection: {_target} -> {Selection.activeObject}");
                 _target = Selection.activeTransform?.gameObject;
             }
 
