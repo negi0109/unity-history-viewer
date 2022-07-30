@@ -13,6 +13,7 @@ public class GitLogLoaderTest
         var loader = new GitLogLoader("path", git);
         var commits = loader.Load();
 
+        Assert.That(commits.Count, Is.EqualTo(2));
         Assert.That(commits[0].hashId, Is.EqualTo(commit1id));
         Assert.That(commits[0].name, Is.EqualTo(commit1name));
         Assert.That(commits[1].hashId, Is.EqualTo(commit2id));
