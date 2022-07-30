@@ -1,62 +1,59 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Negi0109.HistoryViewer.Models;
+using Negi0109.HistoryViewer.Middleware;
 
-public class GameObjectHistoryWindow : EditorWindow
+namespace Negi0109.HistoryViewer.Editors
 {
-    private class UnityLogger : ILogger
+    public class GameObjectHistoryWindow : EditorWindow
     {
-        public void Log(string text)
+        private GameObject _target;
+        private Scene _currentScene;
+        private SceneGit _sceneGit;
+
+
+        [MenuItem("Histories/GameObject")]
+        private static void CreateWindow()
         {
-            Debug.Log(text);
-        }
-    }
-
-    private GameObject _target;
-    private Scene _currentScene;
-    private SceneGit _sceneGit;
-
-
-    [MenuItem("Histories/GameObject")]
-    private static void CreateWindow()
-    {
-        GetWindow<GameObjectHistoryWindow>();
-    }
-
-    public void OnGUI()
-    {
-        // ゲームオブジェクトの選択
-        if (_target != Selection.activeTransform?.gameObject && Selection.activeTransform?.gameObject != null)
-        {
-            Debug.Log($"Selection: {_target} -> {Selection.activeObject}");
-            _target = Selection.activeTransform?.gameObject;
+            GetWindow<GameObjectHistoryWindow>();
         }
 
-        if (_target != null)
+        public void OnGUI()
         {
-            EditorGUILayout.LabelField(_target.name);
+            // ゲームオブジェクトの選択
+            if (_target != Selection.activeTransform?.gameObject && Selection.activeTransform?.gameObject != null)
+            {
+                Debug.Log($"Selection: {_target} -> {Selection.activeObject}");
+                _target = Selection.activeTransform?.gameObject;
+            }
+
+            if (_target != null)
+            {
+                EditorGUILayout.LabelField(_target.name);
+            }
+            else
+            {
+
+            }
         }
-        else
+
+        private void InitScene()
         {
+            _currentScene = SceneManager.GetActiveScene();
 
+            _sceneGit = new SceneGit(new GitCommandExecutor(), _currentScene.path, new UnityLogger());
+            _sceneGit.LoadGitHistory();
+
+            Repaint();
         }
-    }
 
-    private void InitScene()
-    {
-        _currentScene = SceneManager.GetActiveScene();
+        private void Update()
+        {
+            var currentScene = SceneManager.GetActiveScene();
 
-        _sceneGit = new SceneGit(new GitCommandUtil.GitCommandExecutor(), _currentScene.path, new UnityLogger());
-        _sceneGit.LoadGitHistory();
-
-        Repaint();
-    }
-
-    private void Update()
-    {
-        var currentScene = SceneManager.GetActiveScene();
-
-        if (!currentScene.Equals(_currentScene)) InitScene();
-        if (_target != Selection.activeTransform?.gameObject) Repaint();
+            if (!currentScene.Equals(_currentScene)) InitScene();
+            if (_target != Selection.activeTransform?.gameObject) Repaint();
+        }
     }
 }

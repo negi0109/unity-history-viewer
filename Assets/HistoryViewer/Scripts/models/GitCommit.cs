@@ -1,11 +1,14 @@
-public struct GitCommit
+namespace Negi0109.HistoryViewer.Models
 {
-    public readonly string hashId;
-    public readonly string name;
-
-    public GitCommit(string hashId, string name)
+    public struct GitCommit
     {
-        this.hashId = hashId;
-        this.name = name;
+        public readonly string hashId;
+        public readonly string name;
+
+        public GitCommit(string hashId, string name)
+        {
+            this.hashId = hashId;
+            this.name = name;
+        }
     }
 }

@@ -3,54 +3,49 @@ using System.IO;
 using UnityEngine;
 using System.Text;
 
-public static class GitCommandUtil
+namespace Negi0109.HistoryViewer.Middleware
 {
-    private static string gitPath = null;
-
-    private static string GetGitPath()
+    internal static class GitCommandUtil
     {
-        if (gitPath != null) return gitPath;
+        private static string gitPath = null;
 
-        gitPath = "git";
-
-        if (Application.platform == RuntimePlatform.OSXEditor)
+        private static string GetGitPath()
         {
-            foreach (var path in new string[]{
+            if (gitPath != null) return gitPath;
+
+            gitPath = "git";
+
+            if (Application.platform == RuntimePlatform.OSXEditor)
+            {
+                foreach (var path in new string[]{
                 "/usr/local/bin/git",
                 "/usr/bin/git"
                 }
-            )
-            {
-                if (File.Exists(path))
+                )
                 {
-                    gitPath = path;
+                    if (File.Exists(path))
+                    {
+                        gitPath = path;
+                    }
                 }
             }
+
+            return gitPath;
         }
 
-        return gitPath;
-    }
-
-    public static string ExecGitCommand(string arguments)
-    {
-        var psi = new ProcessStartInfo()
+        public static string ExecGitCommand(string arguments)
         {
-            UseShellExecute = false,
-            CreateNoWindow = false,
-            RedirectStandardOutput = true,
-            StandardOutputEncoding = Encoding.UTF8,
-            Arguments = arguments,
-            FileName = GetGitPath(),
-        };
+            var psi = new ProcessStartInfo()
+            {
+                UseShellExecute = false,
+                CreateNoWindow = false,
+                RedirectStandardOutput = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                Arguments = arguments,
+                FileName = GetGitPath(),
+            };
 
-        return ProcessUtil.ExecProcess(psi);
-    }
-
-    public class GitCommandExecutor : IGitCommandExecutor
-    {
-        public string ExecGitCommand(string arguments)
-        {
-            return GitCommandUtil.ExecGitCommand(arguments);
+            return ProcessUtil.ExecProcess(psi);
         }
     }
 }

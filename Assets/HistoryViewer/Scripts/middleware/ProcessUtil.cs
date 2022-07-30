@@ -1,18 +1,21 @@
 using System.Diagnostics;
 
-public static class ProcessUtil
+namespace Negi0109.HistoryViewer.Middleware
 {
-    public static string ExecProcess(ProcessStartInfo psi)
+    internal static class ProcessUtil
     {
-        using var proc = new Process()
+        public static string ExecProcess(ProcessStartInfo psi)
         {
-            StartInfo = psi,
-        };
+            using var proc = new Process()
+            {
+                StartInfo = psi,
+            };
 
-        proc.Start();
-        var text = proc.StandardOutput.ReadToEnd();
-        proc.WaitForExit();
+            proc.Start();
+            var text = proc.StandardOutput.ReadToEnd();
+            proc.WaitForExit();
 
-        return text;
+            return text;
+        }
     }
 }

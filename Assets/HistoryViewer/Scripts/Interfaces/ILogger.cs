@@ -1,9 +1,12 @@
-public interface ILogger
+namespace Negi0109.HistoryViewer.Interfaces
 {
-    public void Log(string text);
-
-    class NoLogger : ILogger
+    public interface ILogger
     {
-        public void Log(string text) { }
+        public void Log(string text);
+
+        class NoLogger : ILogger
+        {
+            public void Log(string text) { }
+        }
     }
 }

@@ -1,4 +1,7 @@
-public interface IGitCommandExecutor
+namespace Negi0109.HistoryViewer.Interfaces
 {
-    public string ExecGitCommand(string arguments);
+    public interface IGitCommandExecutor
+    {
+        public string ExecGitCommand(string arguments);
+    }
 }
