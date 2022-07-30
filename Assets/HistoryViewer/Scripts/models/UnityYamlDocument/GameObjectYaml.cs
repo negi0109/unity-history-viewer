@@ -17,24 +17,29 @@ namespace Negi0109.HistoryViewer.Models
             {
                 if (isComponents)
                 {
-                    if (Regex.IsMatch(line, ".*- component: .*"))
-                        if (int.TryParse(Regex.Replace(line, @"[^0-9]", ""), out int id))
+                    if (line.IndexOf("- component: ") != -1)
+                    {
+                        if (int.TryParse(Regex.Match(line, @"\d+").Value, out int id))
                             componentIds.Add(id);
                         else throw new FormatException();
+
+                        continue;
+                    }
                     else
                     {
                         isComponents = false;
                     }
                 }
 
-                if (Regex.IsMatch(line, ".*m_Component:.*"))
+                if (!isComponents && line.IndexOf("m_Component:") != -1)
                 {
                     isComponents = true;
+                    continue;
                 }
-                else
+
+                if (name == null && line.IndexOf("m_Name: ") != -1)
                 {
-                    if (Regex.IsMatch(line, ".*m_Name: .*"))
-                        name = line.Split("m_Name: ", 2)[1];
+                    name = line[(line.IndexOf(":") + 2)..];
                 }
             }
         }
