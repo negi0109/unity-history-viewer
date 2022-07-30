@@ -10,7 +10,7 @@ namespace Negi0109.HistoryViewer.Models
         public string name;
         public List<int> componentIds = new();
 
-        public GameObjectYaml(UnityYamlDocument doc, ILogger logger = null)
+        public GameObjectYaml(UnityYamlDocument doc)
         {
             bool isComponents = false;
 
@@ -24,15 +24,12 @@ namespace Negi0109.HistoryViewer.Models
                         else throw new FormatException();
                     else
                     {
-                        if (logger != null) logger.Log("parse:end components");
                         isComponents = false;
                     }
                 }
 
                 if (Regex.IsMatch(line, ".*m_Component:.*"))
                 {
-                    if (logger != null) logger.Log("parse:start components");
-
                     isComponents = true;
                 }
                 else
