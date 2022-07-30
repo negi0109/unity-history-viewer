@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using NUnit.Framework;
 using Negi0109.HistoryViewer.Models;
-using System.IO;
-using System.Text;
 
 public class UnityYamlDocumentParserTest
 {

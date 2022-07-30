@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Negi0109.HistoryViewer.Interfaces;
 
 namespace Negi0109.HistoryViewer.Models
 {
