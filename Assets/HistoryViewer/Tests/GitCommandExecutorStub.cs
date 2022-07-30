@@ -21,7 +21,7 @@ public class GitCommandExecutorStub : IGitCommandExecutor
             if (Regex.IsMatch(arguments, pattern)) return _dic[pattern];
         }
 
-        throw new System.Exception();
+        throw new Exception();
     }
 
     public void ExecGitCommand(string arguments, Action<StreamReader> func)
