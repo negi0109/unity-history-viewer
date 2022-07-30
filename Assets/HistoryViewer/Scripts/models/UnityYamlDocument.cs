@@ -37,6 +37,15 @@ namespace Negi0109.HistoryViewer.Models
                 return null;
             }
         }
+        public int FileId
+        {
+            get
+            {
+                CacheName();
+
+                return _fileId;
+            }
+        }
 
         public readonly string name;
         public readonly string content;
@@ -65,6 +74,14 @@ namespace Negi0109.HistoryViewer.Models
             if (int.TryParse(attributes[2], out int type))
             {
                 _type = type;
+            }
+            else
+            {
+                throw new FormatException();
+            }
+            if (int.TryParse(name[(name.LastIndexOf('&') + 1)..], out int fileId))
+            {
+                _fileId = fileId;
             }
             else
             {

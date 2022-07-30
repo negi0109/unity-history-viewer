@@ -32,4 +32,12 @@ public class UnityYamlDocumentParserTest
             Assert.That(doc.IsHeader, Is.EqualTo(IsHeader));
         }
     }
+
+    [TestCase("!u!29 &1", 1, TestName = "case AnyObject")]
+    [TestCase("!u!1 &534047197", 534047197, TestName = "case GameObject")]
+    public void ParseFileId(string name, int fileId)
+    {
+        var doc = new UnityYamlDocument(name, "");
+        Assert.That(doc.FileId, Is.EqualTo(fileId));
+    }
 }
