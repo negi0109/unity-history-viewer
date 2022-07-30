@@ -2,9 +2,9 @@
     "name": "Tests",
     "rootNamespace": "",
     "references": [
-        "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "GitHistory"
+        "HistoryViewerModel",
+        "HistoryViewerInterface"
     ],
     "includePlatforms": [
         "Editor"
