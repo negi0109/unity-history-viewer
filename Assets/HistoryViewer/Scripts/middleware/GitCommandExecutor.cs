@@ -6,7 +6,7 @@ namespace Negi0109.HistoryViewer.Middleware
     {
         public string ExecGitCommand(string arguments)
         {
-            return GitCommandUtil.ExecGitCommand(arguments);
+            return Utils.GitCommandUtil.ExecGitCommand(arguments);
         }
     }
 }

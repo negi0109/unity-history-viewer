@@ -3,9 +3,9 @@ using System.IO;
 using UnityEngine;
 using System.Text;
 
-namespace Negi0109.HistoryViewer.Middleware
+namespace Negi0109.HistoryViewer.Middleware.Utils
 {
-    internal static class GitCommandUtil
+    public static class GitCommandUtil
     {
         private static string gitPath = null;
 

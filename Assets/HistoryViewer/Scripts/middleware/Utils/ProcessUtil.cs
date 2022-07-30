@@ -1,8 +1,8 @@
 using System.Diagnostics;
 
-namespace Negi0109.HistoryViewer.Middleware
+namespace Negi0109.HistoryViewer.Middleware.Utils
 {
-    internal static class ProcessUtil
+    public static class ProcessUtil
     {
         public static string ExecProcess(ProcessStartInfo psi)
         {
