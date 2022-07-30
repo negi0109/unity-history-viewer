@@ -12,7 +12,7 @@ namespace Negi0109.HistoryViewer.Models
             {
                 CacheName();
 
-                return type == 1;
+                return _type == 1;
             }
         }
 
@@ -40,9 +40,10 @@ namespace Negi0109.HistoryViewer.Models
 
         public readonly string name;
         public readonly string content;
-        public bool nameCached = false;
-        public bool contentCached = false;
-        public int type;
+        private bool _nameCached = false;
+        private bool _contentCached = false;
+        private int _type;
+        private int _fileId;
         private GameObjectYaml _gameObject;
         private AnyYaml _anyObject;
 
@@ -54,17 +55,16 @@ namespace Negi0109.HistoryViewer.Models
 
         private void CacheName()
         {
-            if (nameCached) return;
+            if (_nameCached) return;
             if (name == null) return;
 
-            nameCached = true;
-
-            var attributes = name.Split(" ")[0].Split("!");
+            _nameCached = true;
+            var attributes = name[..name.IndexOf(' ')].Split("!");
             if (attributes[1] != "u") throw new FormatException();
 
-            if (int.TryParse(attributes[2], out int num))
+            if (int.TryParse(attributes[2], out int type))
             {
-                type = num;
+                _type = type;
             }
             else
             {
@@ -74,7 +74,7 @@ namespace Negi0109.HistoryViewer.Models
 
         private void CacheContent()
         {
-            if (contentCached) return;
+            if (_contentCached) return;
             if (IsHeader) { }
             else if (IsGameObject)
             {
@@ -85,7 +85,7 @@ namespace Negi0109.HistoryViewer.Models
                 _anyObject = new AnyYaml(this);
             }
 
-            contentCached = true;
+            _contentCached = true;
         }
     }
 }
