@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using Negi0109.HistoryViewer.Interfaces;
 
 namespace Negi0109.HistoryViewer.Models
@@ -9,16 +10,27 @@ namespace Negi0109.HistoryViewer.Models
         {
             get
             {
-                if (!nameCached) CacheName();
+                CacheName();
 
                 return type == 1;
+            }
+        }
+        public string GameObjectName
+        {
+            get
+            {
+                CacheContent();
+
+                return gameObjectName;
             }
         }
 
         public readonly string name;
         public readonly string content;
         public bool nameCached = false;
+        public bool contentCached = false;
         public int type;
+        public string gameObjectName;
 
         public UnityYamlDocument(string name, string content)
         {
@@ -28,6 +40,7 @@ namespace Negi0109.HistoryViewer.Models
 
         private void CacheName()
         {
+            if (nameCached) return;
             if (name == null) return;
 
             nameCached = true;
@@ -43,6 +56,25 @@ namespace Negi0109.HistoryViewer.Models
             {
                 throw new FormatException();
             }
+        }
+
+        private void CacheContent()
+        {
+            if (contentCached) return;
+
+            if (IsGameObject)
+            {
+                // m_Name取得
+                foreach (var line in content.Split("\n"))
+                {
+                    if (Regex.IsMatch(line, " *m_Name: .*"))
+                    {
+                        gameObjectName = line.Split(":", 2)[1];
+                    }
+                }
+            }
+
+            contentCached = true;
         }
     }
 }

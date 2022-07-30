@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Negi0109.HistoryViewer.Interfaces;
 
 namespace Negi0109.HistoryViewer.Models
@@ -7,6 +8,7 @@ namespace Negi0109.HistoryViewer.Models
         private readonly IGitCommandExecutor _git;
         private readonly ILogger _logger;
         private readonly string _scenePath;
+        public List<GitCommit> commits;
 
         public SceneGit(IGitCommandExecutor gce, string scenePath, ILogger logger = null)
         {
@@ -18,7 +20,20 @@ namespace Negi0109.HistoryViewer.Models
         public void LoadGitHistory()
         {
             var loader = new GitLogLoader(_git, _logger);
-            var commits = loader.Load(_scenePath);
+            commits = loader.Load(_scenePath);
+
+            // コミットのファイルの取得
+            foreach (var commit in commits)
+            {
+                _git.ExecGitCommand(
+                    $"show {commit.hashId}:{_scenePath}",
+                    reader =>
+                    {
+                        var parser = new UnityYamlParser(_logger);
+                        commit.unityYaml = parser.Parse(reader);
+                    }
+                );
+            }
         }
     }
 }

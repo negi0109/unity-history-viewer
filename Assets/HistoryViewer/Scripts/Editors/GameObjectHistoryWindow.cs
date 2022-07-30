@@ -34,7 +34,18 @@ namespace Negi0109.HistoryViewer.Editors
             }
             else
             {
-
+                foreach (var commit in _sceneGit.commits)
+                {
+                    EditorGUILayout.LabelField(commit.name);
+                    foreach (var document in commit.unityYaml.documents)
+                    {
+                        if (document.IsGameObject)
+                        {
+                            EditorGUILayout.LabelField($"-- {document.GameObjectName}");
+                        }
+                    }
+                }
+                // EditorGUILayout.LabelField(_target.name);
             }
         }
 
