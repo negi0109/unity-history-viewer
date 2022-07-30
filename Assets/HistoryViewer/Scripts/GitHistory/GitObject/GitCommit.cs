@@ -1,11 +1,11 @@
 public struct GitCommit
 {
-    public readonly string _hashId;
-    public readonly string _name;
+    public readonly string hashId;
+    public readonly string name;
 
     public GitCommit(string hashId, string name)
     {
-        _hashId = hashId;
-        _name = name;
+        this.hashId = hashId;
+        this.name = name;
     }
 }

@@ -5,13 +5,13 @@ public class GitLogLoader
     private readonly int _logMax = 30;
     private readonly string _target;
     private readonly IGitCommandExecutor _git;
-    private readonly ILogger _logger;
+    private readonly ILogger _logger = new ILogger.NoLogger();
 
-    public GitLogLoader(string target, IGitCommandExecutor git, ILogger logger)
+    public GitLogLoader(string target, IGitCommandExecutor git, ILogger logger = null)
     {
         _target = target;
         _git = git;
-        _logger = logger;
+        if (logger != null) _logger = logger;
     }
 
     public List<GitCommit> Load()
