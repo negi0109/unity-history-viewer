@@ -28,7 +28,7 @@ GameObject:
     public void ParseName(string content, string name)
     {
         var doc = new UnityYamlDocument("", content);
-        var gameObject = new UnityYamlDocumentGameObject(doc);
+        var gameObject = new GameObjectYaml(doc);
 
         Assert.That(gameObject.name, Is.EqualTo(name));
 
@@ -56,7 +56,7 @@ GameObject:
     public void ParseComponents(string content, int[] ids)
     {
         var doc = new UnityYamlDocument("", content);
-        var gameObject = new UnityYamlDocumentGameObject(doc, new TestLogger());
+        var gameObject = new GameObjectYaml(doc, new TestLogger());
 
         Assert.That(gameObject.componentIds.ToArray(), Is.EqualTo(ids));
     }

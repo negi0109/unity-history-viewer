@@ -1,6 +1,4 @@
 using System;
-using System.Text.RegularExpressions;
-using Negi0109.HistoryViewer.Interfaces;
 
 namespace Negi0109.HistoryViewer.Models
 {
@@ -16,7 +14,7 @@ namespace Negi0109.HistoryViewer.Models
             }
         }
 
-        public UnityYamlDocumentGameObject gameObject
+        public GameObjectYaml gameObject
         {
             get
             {
@@ -32,7 +30,7 @@ namespace Negi0109.HistoryViewer.Models
         public bool nameCached = false;
         public bool contentCached = false;
         public int type;
-        private UnityYamlDocumentGameObject _gameObject;
+        private GameObjectYaml _gameObject;
 
         public UnityYamlDocument(string name, string content)
         {
@@ -66,7 +64,7 @@ namespace Negi0109.HistoryViewer.Models
 
             if (IsGameObject)
             {
-                _gameObject = new UnityYamlDocumentGameObject(this);
+                _gameObject = new GameObjectYaml(this);
             }
 
             contentCached = true;

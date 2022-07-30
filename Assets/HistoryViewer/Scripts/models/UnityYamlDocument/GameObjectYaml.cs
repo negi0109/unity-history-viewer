@@ -5,12 +5,12 @@ using Negi0109.HistoryViewer.Interfaces;
 
 namespace Negi0109.HistoryViewer.Models
 {
-    public class UnityYamlDocumentGameObject
+    public class GameObjectYaml
     {
         public string name;
         public List<int> componentIds = new();
 
-        public UnityYamlDocumentGameObject(UnityYamlDocument doc, ILogger logger = null)
+        public GameObjectYaml(UnityYamlDocument doc, ILogger logger = null)
         {
             bool isComponents = false;
 
