@@ -54,7 +54,8 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1", new int[] { 490523429, 490523430, 490523431 })]
+  m_IsActive: 1
+", new int[] { 490523429, 490523430, 490523431 })]
         public void ParseComponents(string content, int[] ids)
         {
             var doc = new UnityYamlDocument("", content);

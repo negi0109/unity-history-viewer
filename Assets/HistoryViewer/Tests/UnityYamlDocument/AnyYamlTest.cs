@@ -16,7 +16,8 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1", "AudioListener")]
+  m_Enabled: 1
+", "AudioListener")]
         public void ParseName(string content, string name)
         {
             var doc = new UnityYamlDocument("", content);
