@@ -10,8 +10,8 @@ public class GitLogLoaderTest
         {
             { "log.* --pretty=\"%H%x09%s\".* -- path", $"{commit1id}\t{commit1name}\n{commit2id}\t{commit2name}\n" }
         });
-        var loader = new GitLogLoader("path", git);
-        var commits = loader.Load();
+        var loader = new GitLogLoader(git);
+        var commits = loader.Load("path");
 
         Assert.That(commits.Count, Is.EqualTo(2));
         Assert.That(commits[0].hashId, Is.EqualTo(commit1id));

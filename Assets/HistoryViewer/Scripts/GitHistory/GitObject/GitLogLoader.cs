@@ -3,23 +3,21 @@ using System.Collections.Generic;
 public class GitLogLoader
 {
     private readonly int _logMax = 30;
-    private readonly string _target;
     private readonly IGitCommandExecutor _git;
     private readonly ILogger _logger = new ILogger.NoLogger();
 
-    public GitLogLoader(string target, IGitCommandExecutor git, ILogger logger = null)
+    public GitLogLoader(IGitCommandExecutor git, ILogger logger = null)
     {
-        _target = target;
         _git = git;
         if (logger != null) _logger = logger;
     }
 
-    public List<GitCommit> Load()
+    public List<GitCommit> Load(string target)
     {
         var commits = new List<GitCommit>();
         var commitParser = new GitCommitParser();
 
-        var history = _git.ExecGitCommand($"log -n {_logMax} --pretty=\"{GitCommitParser.LogFormat}\" -- {_target}");
+        var history = _git.ExecGitCommand($"log -n {_logMax} --pretty=\"{GitCommitParser.LogFormat}\" -- {target}");
         _logger.Log(history);
 
         foreach (var line in history.Split("\n"))

@@ -14,7 +14,7 @@ public class SceneGit
 
     public void LoadGitHistory()
     {
-        var loader = new GitLogLoader(_scenePath, _git, _logger);
-        var commits = loader.Load();
+        var loader = new GitLogLoader(_git, _logger);
+        var commits = loader.Load(_scenePath);
     }
 }
