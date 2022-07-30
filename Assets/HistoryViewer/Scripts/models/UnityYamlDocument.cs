@@ -4,6 +4,8 @@ namespace Negi0109.HistoryViewer.Models
 {
     public class UnityYamlDocument
     {
+        public bool IsHeader { get => name == null; }
+        public bool IsAnyObject { get => !IsHeader && !IsGameObject; }
         public bool IsGameObject
         {
             get
@@ -14,12 +16,23 @@ namespace Negi0109.HistoryViewer.Models
             }
         }
 
-        public GameObjectYaml gameObject
+        public GameObjectYaml GameObject
         {
             get
             {
                 CacheContent();
                 if (IsGameObject) return _gameObject;
+
+                return null;
+            }
+        }
+
+        public AnyYaml AnyObject
+        {
+            get
+            {
+                CacheContent();
+                if (IsGameObject) return _anyObject;
 
                 return null;
             }
@@ -31,6 +44,7 @@ namespace Negi0109.HistoryViewer.Models
         public bool contentCached = false;
         public int type;
         private GameObjectYaml _gameObject;
+        private AnyYaml _anyObject;
 
         public UnityYamlDocument(string name, string content)
         {
@@ -61,10 +75,14 @@ namespace Negi0109.HistoryViewer.Models
         private void CacheContent()
         {
             if (contentCached) return;
-
-            if (IsGameObject)
+            if (IsHeader) { }
+            else if (IsGameObject)
             {
                 _gameObject = new GameObjectYaml(this);
+            }
+            else if (IsAnyObject)
+            {
+                _anyObject = new AnyYaml(this);
             }
 
             contentCached = true;

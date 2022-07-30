@@ -41,7 +41,7 @@ namespace Negi0109.HistoryViewer.Editors
                     {
                         if (document.IsGameObject)
                         {
-                            EditorGUILayout.LabelField($"-- {document.gameObject.name}");
+                            EditorGUILayout.LabelField($"-- {document.GameObject.name}");
                         }
                     }
                 }
