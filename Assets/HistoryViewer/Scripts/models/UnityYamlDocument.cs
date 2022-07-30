@@ -32,7 +32,7 @@ namespace Negi0109.HistoryViewer.Models
             get
             {
                 CacheContent();
-                if (IsGameObject) return _anyObject;
+                if (IsAnyObject) return _anyObject;
 
                 return null;
             }

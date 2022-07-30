@@ -22,7 +22,7 @@ namespace Negi0109.HistoryViewer.Editors
         public void OnGUI()
         {
             // ゲームオブジェクトの選択
-            if (_target != Selection.activeTransform?.gameObject && Selection.activeTransform?.gameObject != null)
+            if (_target != Selection.activeTransform?.gameObject)
             {
                 Debug.Log($"Selection: {_target} -> {Selection.activeObject}");
                 _target = Selection.activeTransform?.gameObject;
@@ -31,6 +31,21 @@ namespace Negi0109.HistoryViewer.Editors
             if (_target != null)
             {
                 EditorGUILayout.LabelField(_target.name);
+
+                foreach (var commit in _sceneGit.commits)
+                {
+                    EditorGUILayout.LabelField(commit.name);
+                    if (commit.unityYaml.TryGetGameObject((int)GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId, out var gameObjectYaml))
+                    {
+                        foreach (var componentId in gameObjectYaml.GameObject.componentIds)
+                        {
+                            if (commit.unityYaml.TryGetComponent(componentId, out var componentYaml))
+                            {
+                                EditorGUILayout.LabelField($"-- {componentYaml.AnyObject.name}");
+                            }
+                        }
+                    }
+                }
             }
             else
             {

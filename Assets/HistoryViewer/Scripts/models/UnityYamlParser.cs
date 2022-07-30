@@ -26,7 +26,7 @@ namespace Negi0109.HistoryViewer.Models
 
                 if (line.StartsWith(yamlDocumentDelimiter))
                 {
-                    yaml.documents.Add(new UnityYamlDocument(name, content.ToString()));
+                    yaml.AddYamlDocument(new UnityYamlDocument(name, content.ToString()));
                     name = line[yamlDocumentDelimiter.Length..];
                     content = new StringBuilder();
                 }
@@ -34,7 +34,7 @@ namespace Negi0109.HistoryViewer.Models
                 content.Append(line + "\n");
             }
 
-            yaml.documents.Add(new UnityYamlDocument(name, content.ToString()));
+            yaml.AddYamlDocument(new UnityYamlDocument(name, content.ToString()));
 
             return yaml;
         }
