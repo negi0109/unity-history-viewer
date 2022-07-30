@@ -15,13 +15,15 @@ namespace Negi0109.HistoryViewer.Models
                 return type == 1;
             }
         }
-        public string GameObjectName
+
+        public UnityYamlDocumentGameObject gameObject
         {
             get
             {
                 CacheContent();
+                if (IsGameObject) return _gameObject;
 
-                return gameObjectName;
+                return null;
             }
         }
 
@@ -30,7 +32,7 @@ namespace Negi0109.HistoryViewer.Models
         public bool nameCached = false;
         public bool contentCached = false;
         public int type;
-        public string gameObjectName;
+        private UnityYamlDocumentGameObject _gameObject;
 
         public UnityYamlDocument(string name, string content)
         {
@@ -64,14 +66,7 @@ namespace Negi0109.HistoryViewer.Models
 
             if (IsGameObject)
             {
-                // m_Name取得
-                foreach (var line in content.Split("\n"))
-                {
-                    if (Regex.IsMatch(line, " *m_Name: .*"))
-                    {
-                        gameObjectName = line.Split(":", 2)[1];
-                    }
-                }
+                _gameObject = new UnityYamlDocumentGameObject(this);
             }
 
             contentCached = true;
