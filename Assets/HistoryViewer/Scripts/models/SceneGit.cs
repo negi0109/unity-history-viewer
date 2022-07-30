@@ -5,15 +5,14 @@ namespace Negi0109.HistoryViewer.Models
     public class SceneGit
     {
         private readonly IGitCommandExecutor _git;
-        private readonly ILogger _logger = new ILogger.NoLogger();
+        private readonly ILogger _logger;
         private readonly string _scenePath;
 
         public SceneGit(IGitCommandExecutor gce, string scenePath, ILogger logger = null)
         {
             _git = gce;
             _scenePath = scenePath;
-
-            if (logger != null) _logger = logger;
+            _logger = logger;
         }
 
         public void LoadGitHistory()

@@ -7,12 +7,12 @@ namespace Negi0109.HistoryViewer.Models
     {
         private readonly int _logMax = 30;
         private readonly IGitCommandExecutor _git;
-        private readonly ILogger _logger = new ILogger.NoLogger();
+        private readonly ILogger _logger;
 
         public GitLogLoader(IGitCommandExecutor git, ILogger logger = null)
         {
             _git = git;
-            if (logger != null) _logger = logger;
+            _logger = logger;
         }
 
         public List<GitCommit> Load(string target)
@@ -20,17 +20,19 @@ namespace Negi0109.HistoryViewer.Models
             var commits = new List<GitCommit>();
             var commitParser = new GitCommitParser();
 
-            var history = _git.ExecGitCommand($"log -n {_logMax} --pretty=\"{GitCommitParser.LogFormat}\" -- {target}");
-            _logger.Log(history);
+            _git.ExecGitCommand(
+                $"log -n {_logMax} --pretty=\"{GitCommitParser.LogFormat}\" -- {target}",
+                reader =>
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+                        var commit = commitParser.Parse(line);
 
-            foreach (var line in history.Split("\n"))
-            {
-                if (string.IsNullOrEmpty(line)) continue;
-
-                var commit = commitParser.Parse(line);
-
-                commits.Add(commit);
-            }
+                        commits.Add(commit);
+                    }
+                }
+            );
 
             return commits;
         }

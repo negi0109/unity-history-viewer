@@ -1,4 +1,6 @@
+using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace Negi0109.HistoryViewer.Middleware.Utils
 {
@@ -16,6 +18,19 @@ namespace Negi0109.HistoryViewer.Middleware.Utils
             proc.WaitForExit();
 
             return text;
+        }
+
+        public static void ExecProcess(ProcessStartInfo psi, Action<StreamReader> func)
+        {
+            using var proc = new Process()
+            {
+                StartInfo = psi,
+            };
+
+            proc.Start();
+            func(proc.StandardOutput);
+            proc.WaitForExit();
+            proc.Close();
         }
     }
 }

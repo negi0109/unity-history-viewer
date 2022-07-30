@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
@@ -35,6 +36,14 @@ namespace Negi0109.HistoryViewer.Middleware.Utils
 
         public static string ExecGitCommand(string arguments)
         {
+            string text = "";
+            ExecGitCommand(arguments, (reader) => { text = reader.ReadToEnd(); });
+
+            return text;
+        }
+
+        public static void ExecGitCommand(string arguments, Action<StreamReader> func)
+        {
             var psi = new ProcessStartInfo()
             {
                 UseShellExecute = false,
@@ -45,7 +54,7 @@ namespace Negi0109.HistoryViewer.Middleware.Utils
                 FileName = GetGitPath(),
             };
 
-            return ProcessUtil.ExecProcess(psi);
+            ProcessUtil.ExecProcess(psi, func);
         }
     }
 }

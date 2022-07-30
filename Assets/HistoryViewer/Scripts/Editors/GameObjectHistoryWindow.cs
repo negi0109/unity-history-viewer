@@ -40,9 +40,11 @@ namespace Negi0109.HistoryViewer.Editors
 
         private void InitScene()
         {
-            _currentScene = SceneManager.GetActiveScene();
+            var logger = new UnityLogger();
+            var git = new GitCommandExecutor(logger);
 
-            _sceneGit = new SceneGit(new GitCommandExecutor(), _currentScene.path, new UnityLogger());
+            _currentScene = SceneManager.GetActiveScene();
+            _sceneGit = new SceneGit(git, _currentScene.path, logger);
             _sceneGit.LoadGitHistory();
 
             Repaint();
