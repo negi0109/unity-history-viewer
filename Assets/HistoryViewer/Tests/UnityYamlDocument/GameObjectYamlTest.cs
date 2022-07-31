@@ -13,7 +13,7 @@ namespace UnityYamlDocumentTest
             _factory = new UnityYamlDocument.Factory();
         }
 
-        [TestCase(
+        [TestCase("!u!1 &490523428",
     @"--- !u!1 &490523428
 GameObject:
   m_ObjectHideFlags: 0
@@ -32,16 +32,15 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1", "Sample Object1")]
-        public void ParseName(string content, string name)
+        public void ParseName(string name, string content, string gameObjectName)
         {
-            var doc = _factory.Get("", content);
+            var doc = _factory.Get(name, content);
             var gameObject = new GameObjectYaml(doc);
 
-            Assert.That(gameObject.name, Is.EqualTo(name));
-
+            Assert.That(gameObject.name, Is.EqualTo(gameObjectName));
         }
 
-        [TestCase(
+        [TestCase("!u!1 &490523428",
     @"--- !u!1 &490523428
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,9 +60,9 @@ GameObject:
   m_StaticEditorFlags: 0
   m_IsActive: 1
 ", new int[] { 490523429, 490523430, 490523431 })]
-        public void ParseComponents(string content, int[] ids)
+        public void ParseComponents(string name, string content, int[] ids)
         {
-            var doc = _factory.Get("", content);
+            var doc = _factory.Get(name, content);
             var gameObject = new GameObjectYaml(doc);
 
             Assert.That(gameObject.componentIds.ToArray(), Is.EqualTo(ids));

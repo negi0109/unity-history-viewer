@@ -13,7 +13,7 @@ namespace UnityYamlDocumentTest
             _factory = new UnityYamlDocument.Factory();
         }
 
-        [TestCase(
+        [TestCase("!u!81 &519420029",
     @"--- !u!81 &519420029
 AudioListener:
   m_ObjectHideFlags: 0
@@ -23,12 +23,12 @@ AudioListener:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
 ", "AudioListener")]
-        public void ParseName(string content, string name)
+        public void ParseName(string name, string content, string objectName)
         {
-            var doc = _factory.Get("", content);
+            var doc = _factory.Get(name, content);
             var yaml = new AnyYaml(doc);
 
-            Assert.That(yaml.name, Is.EqualTo(name));
+            Assert.That(yaml.name, Is.EqualTo(objectName));
         }
     }
 }

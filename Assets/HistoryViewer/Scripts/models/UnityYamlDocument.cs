@@ -10,12 +10,7 @@ namespace Negi0109.HistoryViewer.Models
         public bool IsAnyObject { get => !IsHeader && !IsGameObject; }
         public bool IsGameObject
         {
-            get
-            {
-                CacheName();
-
-                return _type == 1;
-            }
+            get => _type == 1;
         }
 
         public GameObjectYaml GameObject
@@ -41,17 +36,11 @@ namespace Negi0109.HistoryViewer.Models
         }
         public int FileId
         {
-            get
-            {
-                CacheName();
-
-                return _fileId;
-            }
+            get => _fileId;
         }
 
         public readonly string name;
         public readonly string content;
-        private bool _nameCached = false;
         private bool _contentCached = false;
         private int _type;
         private int _fileId;
@@ -62,14 +51,14 @@ namespace Negi0109.HistoryViewer.Models
         {
             this.name = name;
             this.content = content;
+
+            CacheName();
         }
 
         private void CacheName()
         {
-            if (_nameCached) return;
             if (name == null) return;
 
-            _nameCached = true;
             var attributes = name[..name.IndexOf(' ')].Split("!");
             if (attributes[1] != "u") throw new FormatException();
 
