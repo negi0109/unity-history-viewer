@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Negi0109.HistoryViewer.Interfaces;
 
 namespace Negi0109.HistoryViewer.Models
 {
@@ -56,7 +58,7 @@ namespace Negi0109.HistoryViewer.Models
         private GameObjectYaml _gameObject;
         private AnyYaml _anyObject;
 
-        public UnityYamlDocument(string name, string content)
+        private UnityYamlDocument(string name, string content)
         {
             this.name = name;
             this.content = content;
@@ -103,6 +105,40 @@ namespace Negi0109.HistoryViewer.Models
             }
 
             _contentCached = true;
+        }
+
+        public class Builder
+        {
+            private readonly Dictionary<string, UnityYamlDocument> _pool;
+            private readonly ILogger _logger;
+
+            public Builder(Dictionary<string, UnityYamlDocument> pool = null, ILogger logger = null)
+            {
+                _pool = pool;
+                _logger = logger;
+            }
+
+            public UnityYamlDocument Build(string name, string content)
+            {
+                if (_pool == null)
+                {
+                    return new UnityYamlDocument(name, content);
+                }
+                else if (_pool.TryGetValue(content, out var value))
+                {
+                    if (_logger != null) _logger.Log("cache hit");
+
+                    return value;
+                }
+                else
+                {
+                    if (_logger != null) _logger.Log("cache miss");
+
+                    var doc = new UnityYamlDocument(name, content);
+                    _pool.Add(content, doc);
+                    return doc;
+                }
+            }
         }
     }
 }

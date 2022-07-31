@@ -5,6 +5,14 @@ namespace UnityYamlDocumentTest
 {
     public class AnyYamlTest
     {
+        private UnityYamlDocument.Builder _builder;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _builder = new UnityYamlDocument.Builder();
+        }
+
         [TestCase(
     @"--- !u!81 &519420029
 AudioListener:
@@ -17,7 +25,7 @@ AudioListener:
 ", "AudioListener")]
         public void ParseName(string content, string name)
         {
-            var doc = new UnityYamlDocument("", content);
+            var doc = _builder.Build("", content);
             var yaml = new AnyYaml(doc);
 
             Assert.That(yaml.name, Is.EqualTo(name));

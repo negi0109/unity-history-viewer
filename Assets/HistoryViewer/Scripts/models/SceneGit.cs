@@ -8,6 +8,7 @@ namespace Negi0109.HistoryViewer.Models
         private readonly IGitCommandExecutor _git;
         private readonly ILogger _logger;
         private readonly string _scenePath;
+        private readonly Dictionary<string, UnityYamlDocument> _unityYamlDocumentPool = new();
         public List<GitCommit> commits;
 
         public SceneGit(IGitCommandExecutor gce, string scenePath, ILogger logger = null)
@@ -29,7 +30,7 @@ namespace Negi0109.HistoryViewer.Models
                     $"show {commit.hashId}:{_scenePath}",
                     reader =>
                     {
-                        var parser = new UnityYamlParser(_logger);
+                        var parser = new UnityYamlParser(_unityYamlDocumentPool, _logger);
                         commit.unityYaml = parser.Parse(reader);
                     }
                 );
