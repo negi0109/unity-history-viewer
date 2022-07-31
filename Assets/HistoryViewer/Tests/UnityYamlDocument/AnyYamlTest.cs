@@ -5,12 +5,12 @@ namespace UnityYamlDocumentTest
 {
     public class AnyYamlTest
     {
-        private UnityYamlDocument.Builder _builder;
+        private UnityYamlDocument.Factory _factory;
 
         [SetUp]
         public void SetUp()
         {
-            _builder = new UnityYamlDocument.Builder();
+            _factory = new UnityYamlDocument.Factory();
         }
 
         [TestCase(
@@ -25,7 +25,7 @@ AudioListener:
 ", "AudioListener")]
         public void ParseName(string content, string name)
         {
-            var doc = _builder.Build("", content);
+            var doc = _factory.Get("", content);
             var yaml = new AnyYaml(doc);
 
             Assert.That(yaml.name, Is.EqualTo(name));

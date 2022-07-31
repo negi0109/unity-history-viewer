@@ -19,7 +19,7 @@ namespace Negi0109.HistoryViewer.Models
 
         public UnityYaml Parse(StreamReader reader)
         {
-            var builder = new UnityYamlDocument.Builder(_pool, _logger);
+            var factory = new UnityYamlDocument.Factory(_pool, _logger);
             var yaml = new UnityYaml();
             var content = new StringBuilder();
             string name = null;
@@ -30,7 +30,7 @@ namespace Negi0109.HistoryViewer.Models
 
                 if (line.StartsWith(yamlDocumentDelimiter))
                 {
-                    yaml.AddYamlDocument(builder.Build(name, content.ToString()));
+                    yaml.AddYamlDocument(factory.Get(name, content.ToString()));
                     name = line[yamlDocumentDelimiter.Length..];
                     content = new StringBuilder();
                 }
@@ -38,7 +38,7 @@ namespace Negi0109.HistoryViewer.Models
                 content.Append(line + "\n");
             } while (!reader.EndOfStream);
 
-            yaml.AddYamlDocument(builder.Build(name, content.ToString()));
+            yaml.AddYamlDocument(factory.Get(name, content.ToString()));
 
             return yaml;
         }

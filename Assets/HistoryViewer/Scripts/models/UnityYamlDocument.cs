@@ -107,18 +107,18 @@ namespace Negi0109.HistoryViewer.Models
             _contentCached = true;
         }
 
-        public class Builder
+        public class Factory
         {
             private readonly Dictionary<string, UnityYamlDocument> _pool;
             private readonly ILogger _logger;
 
-            public Builder(Dictionary<string, UnityYamlDocument> pool = null, ILogger logger = null)
+            public Factory(Dictionary<string, UnityYamlDocument> pool = null, ILogger logger = null)
             {
                 _pool = pool;
                 _logger = logger;
             }
 
-            public UnityYamlDocument Build(string name, string content)
+            public UnityYamlDocument Get(string name, string content)
             {
                 if (_pool == null)
                 {

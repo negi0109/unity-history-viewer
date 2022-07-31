@@ -5,12 +5,12 @@ namespace UnityYamlDocumentTest
 {
     public class GameObjectYamlTest
     {
-        private UnityYamlDocument.Builder _builder;
+        private UnityYamlDocument.Factory _factory;
 
         [SetUp]
         public void SetUp()
         {
-            _builder = new UnityYamlDocument.Builder();
+            _factory = new UnityYamlDocument.Factory();
         }
 
         [TestCase(
@@ -34,7 +34,7 @@ GameObject:
   m_IsActive: 1", "Sample Object1")]
         public void ParseName(string content, string name)
         {
-            var doc = _builder.Build("", content);
+            var doc = _factory.Get("", content);
             var gameObject = new GameObjectYaml(doc);
 
             Assert.That(gameObject.name, Is.EqualTo(name));
@@ -63,7 +63,7 @@ GameObject:
 ", new int[] { 490523429, 490523430, 490523431 })]
         public void ParseComponents(string content, int[] ids)
         {
-            var doc = _builder.Build("", content);
+            var doc = _factory.Get("", content);
             var gameObject = new GameObjectYaml(doc);
 
             Assert.That(gameObject.componentIds.ToArray(), Is.EqualTo(ids));
