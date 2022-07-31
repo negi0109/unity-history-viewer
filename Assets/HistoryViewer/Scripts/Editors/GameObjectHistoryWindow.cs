@@ -11,6 +11,7 @@ namespace Negi0109.HistoryViewer.Editors
         private GameObject _target;
         private Scene _currentScene;
         private SceneGit _sceneGit;
+        private BufferedLogger _logger;
 
 
         [MenuItem("Histories/GameObject")]
@@ -21,57 +22,72 @@ namespace Negi0109.HistoryViewer.Editors
 
         public void OnGUI()
         {
-            // ゲームオブジェクトの選択
-            if (_target != Selection.activeTransform?.gameObject)
+            try
             {
-                // Debug.Log($"Selection: {_target} -> {Selection.activeObject}");
-                _target = Selection.activeTransform?.gameObject;
-            }
-
-            if (_target != null)
-            {
-                EditorGUILayout.LabelField(_target.name);
-
-                foreach (var commit in _sceneGit.commits)
+                // ゲームオブジェクトの選択
+                if (_target != Selection.activeTransform?.gameObject)
                 {
-                    EditorGUILayout.LabelField(commit.name);
-                    if (commit.unityYaml.TryGetGameObject((int)GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId, out var gameObjectYaml))
+                    // Debug.Log($"Selection: {_target} -> {Selection.activeObject}");
+                    _target = Selection.activeTransform?.gameObject;
+                }
+
+                if (_target != null)
+                {
+                    EditorGUILayout.LabelField(_target.name);
+
+                    foreach (var commit in _sceneGit.commits)
                     {
-                        foreach (var componentId in gameObjectYaml.GameObject.componentIds)
+                        EditorGUILayout.LabelField(commit.name);
+                        if (commit.unityYaml.TryGetGameObject((int)GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId, out var gameObjectYaml))
                         {
-                            if (commit.unityYaml.TryGetComponent(componentId, out var componentYaml))
+                            foreach (var componentId in gameObjectYaml.GameObject.componentIds)
                             {
-                                EditorGUILayout.LabelField($"-- {componentYaml.AnyObject.name}");
+                                if (commit.unityYaml.TryGetComponent(componentId, out var componentYaml))
+                                {
+                                    EditorGUILayout.LabelField($"-- {componentYaml.AnyObject.name}");
+                                }
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                foreach (var commit in _sceneGit.commits)
+                else
                 {
-                    EditorGUILayout.LabelField(commit.name);
-                    foreach (var document in commit.unityYaml.documents)
+                    foreach (var commit in _sceneGit.commits)
                     {
-                        if (document.IsGameObject)
+                        EditorGUILayout.LabelField(commit.name);
+                        foreach (var document in commit.unityYaml.documents)
                         {
-                            EditorGUILayout.LabelField($"-- {document.GameObject.name}");
+                            if (document.IsGameObject)
+                            {
+                                EditorGUILayout.LabelField($"-- {document.GameObject.name}");
+                            }
                         }
                     }
+                    // EditorGUILayout.LabelField(_target.name);
                 }
-                // EditorGUILayout.LabelField(_target.name);
+            }
+            finally
+            {
+                _logger.PrintLog("UnityHistoryViewer-log: Repaint");
             }
         }
 
         private void InitScene()
         {
-            var logger = new UnityLogger();
-            var git = new GitCommandExecutor(logger);
+            try
+            {
+                _logger = new BufferedLogger(new UnityLogger());
 
-            _currentScene = SceneManager.GetActiveScene();
-            _sceneGit = new SceneGit(git, _currentScene.path, logger);
-            _sceneGit.LoadGitHistory();
+                var git = new GitCommandExecutor(_logger);
+
+                _currentScene = SceneManager.GetActiveScene();
+                _sceneGit = new SceneGit(git, _currentScene.path, _logger);
+                _sceneGit.LoadGitHistory();
+            }
+            finally
+            {
+                _logger.PrintLog("UnityHistoryViewer-log: LoadGitHistory");
+            }
 
             Repaint();
         }
