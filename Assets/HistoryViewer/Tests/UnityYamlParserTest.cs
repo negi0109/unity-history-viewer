@@ -74,8 +74,8 @@ GameObject:
     [Test]
     public void ParseAnyObjects()
     {
-        Assert.That(_unityYaml.anyObjectDocumentDictionary[1].name, Is.EqualTo(@"!u!29 &1"));
-        Assert.That(_unityYaml.anyObjectDocumentDictionary[1].content, Is.EqualTo(
+        Assert.That(_unityYaml.anyObjectDocuments[1].name, Is.EqualTo(@"!u!29 &1"));
+        Assert.That(_unityYaml.anyObjectDocuments[1].content, Is.EqualTo(
           @"--- !u!29 &1
 OcclusionCullingSettings:
   m_ObjectHideFlags: 0

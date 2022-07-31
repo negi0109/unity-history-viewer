@@ -6,7 +6,7 @@ namespace Negi0109.HistoryViewer.Models
     {
         public UnityYamlDocument header;
         public Dictionary<ulong, UnityYamlDocument> gameObjectDocuments = new();
-        public Dictionary<ulong, UnityYamlDocument> anyObjectDocumentDictionary = new();
+        public Dictionary<ulong, UnityYamlDocument> anyObjectDocuments = new();
 
         public bool TryGetGameObject(ulong id, out UnityYamlDocument yaml)
         {
@@ -24,7 +24,7 @@ namespace Negi0109.HistoryViewer.Models
 
         public bool TryGetComponent(ulong componentId, out UnityYamlDocument yaml)
         {
-            if (anyObjectDocumentDictionary.TryGetValue(componentId, out var value))
+            if (anyObjectDocuments.TryGetValue(componentId, out var value))
             {
                 yaml = value;
                 return true;
@@ -39,7 +39,7 @@ namespace Negi0109.HistoryViewer.Models
         public void AddYamlDocument(UnityYamlDocument document)
         {
             if (document.IsGameObject) gameObjectDocuments.Add(document.FileId, document);
-            else if (document.IsAnyObject) anyObjectDocumentDictionary.Add(document.FileId, document);
+            else if (document.IsAnyObject) anyObjectDocuments.Add(document.FileId, document);
             else if (document.IsHeader) header = document;
         }
     }
