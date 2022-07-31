@@ -76,7 +76,7 @@ namespace Negi0109.HistoryViewer.Editors
         {
             try
             {
-                _logger = new BufferedLogger(new UnityLogger());
+                _logger = new BufferedLogger(new UnityLogger(), true);
 
                 var git = new GitCommandExecutor(_logger);
 

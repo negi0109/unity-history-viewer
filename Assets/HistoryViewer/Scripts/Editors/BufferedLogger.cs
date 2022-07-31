@@ -5,12 +5,14 @@ namespace Negi0109.HistoryViewer.Editors
 {
     public class BufferedLogger : Interfaces.ILogger
     {
-        private Interfaces.ILogger _logger;
-        private Queue<string> _logs = new();
+        private readonly Interfaces.ILogger _logger;
+        private readonly bool _composite;
+        private readonly Queue<string> _logs = new();
 
-        public BufferedLogger(Interfaces.ILogger logger)
+        public BufferedLogger(Interfaces.ILogger logger, bool composite = false)
         {
             _logger = logger;
+            _composite = composite;
         }
 
         public void Log(string text)
@@ -25,10 +27,39 @@ namespace Negi0109.HistoryViewer.Editors
 
             if (title != null) log.AppendLine(title);
 
-            while (_logs.TryDequeue(out var text))
+            if (_composite)
             {
-                log.AppendLine(text);
-                logged = true;
+                int compositeLogCount = 1;
+
+                if (_logs.TryDequeue(out var prevLog)) logged = true;
+                else return;
+
+                while (_logs.TryDequeue(out var nextLog))
+                {
+                    if (prevLog.Equals(nextLog))
+                    {
+                        compositeLogCount++;
+                    }
+                    else
+                    {
+                        if (compositeLogCount == 1) log.AppendLine(prevLog);
+                        else log.AppendLine($"{prevLog} (repeated={compositeLogCount})");
+
+                        prevLog = nextLog;
+                        compositeLogCount = 1;
+                    }
+                }
+
+                if (compositeLogCount == 1) log.AppendLine(prevLog);
+                else log.AppendLine($"{prevLog} (repeated={compositeLogCount})");
+            }
+            else
+            {
+                while (_logs.TryDequeue(out var text))
+                {
+                    log.AppendLine(text);
+                    logged = true;
+                }
             }
 
             if (logged)
