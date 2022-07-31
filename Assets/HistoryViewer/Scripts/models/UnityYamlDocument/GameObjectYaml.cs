@@ -7,7 +7,7 @@ namespace Negi0109.HistoryViewer.Models
     public class GameObjectYaml
     {
         public string name;
-        public List<int> componentIds = new();
+        public List<ulong> componentIds = new();
 
         public GameObjectYaml(UnityYamlDocument doc)
         {
@@ -19,7 +19,7 @@ namespace Negi0109.HistoryViewer.Models
                 {
                     if (line.IndexOf("- component: ") != -1)
                     {
-                        if (int.TryParse(Regex.Match(line, @"\d+").Value, out int id))
+                        if (ulong.TryParse(Regex.Match(line, @"\d+").Value, out ulong id))
                             componentIds.Add(id);
                         else throw new FormatException();
 

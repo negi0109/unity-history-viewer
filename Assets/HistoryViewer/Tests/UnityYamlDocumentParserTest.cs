@@ -48,7 +48,7 @@ public class UnityYamlDocumentParserTest
 
     [TestCase("!u!29 &1", 1, TestName = "case AnyObject")]
     [TestCase("!u!1 &534047197", 534047197, TestName = "case GameObject")]
-    public void ParseFileId(string name, int fileId)
+    public void ParseFileId(string name, ulong fileId)
     {
         var doc = _factory.Get(name, "");
         Assert.That(doc.FileId, Is.EqualTo(fileId));

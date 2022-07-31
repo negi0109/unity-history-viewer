@@ -34,7 +34,7 @@ namespace Negi0109.HistoryViewer.Models
                 return null;
             }
         }
-        public int FileId
+        public ulong FileId
         {
             get => _fileId;
         }
@@ -43,7 +43,7 @@ namespace Negi0109.HistoryViewer.Models
         public readonly string content;
         private bool _contentCached = false;
         private int _type;
-        private int _fileId;
+        private ulong _fileId;
         private GameObjectYaml _gameObject;
         private AnyYaml _anyObject;
 
@@ -70,7 +70,7 @@ namespace Negi0109.HistoryViewer.Models
             {
                 throw new FormatException();
             }
-            if (int.TryParse(name[(name.LastIndexOf('&') + 1)..], out int fileId))
+            if (ulong.TryParse(name[(name.LastIndexOf('&') + 1)..], out ulong fileId))
             {
                 _fileId = fileId;
             }
