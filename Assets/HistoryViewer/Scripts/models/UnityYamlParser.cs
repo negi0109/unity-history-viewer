@@ -35,7 +35,7 @@ namespace Negi0109.HistoryViewer.Models
                     content = new StringBuilder();
                 }
 
-                content.Append(line + "\n");
+                content.AppendLine(line);
             } while (!reader.EndOfStream);
 
             yaml.AddYamlDocument(factory.Get(name, content.ToString()));
