@@ -38,12 +38,17 @@ namespace Negi0109.HistoryViewer.Models
         {
             get => _fileId;
         }
+        public bool Stripped
+        {
+            get => _stripped;
+        }
 
         public readonly string name;
         public readonly string content;
         private bool _contentCached = false;
         private int _type;
         private ulong _fileId;
+        private bool _stripped;
         private GameObjectYaml _gameObject;
         private AnyYaml _anyObject;
 
@@ -59,10 +64,11 @@ namespace Negi0109.HistoryViewer.Models
         {
             if (name == null) return;
 
-            var attributes = name[..name.IndexOf(' ')].Split("!");
-            if (attributes[1] != "u") throw new FormatException();
+            var attributes = name.Split(' ');
+            var attribute0 = attributes[0].Split('!');
+            if (attribute0[1] != "u") throw new FormatException();
 
-            if (int.TryParse(attributes[2], out int type))
+            if (int.TryParse(attribute0[2], out int type))
             {
                 _type = type;
             }
@@ -70,13 +76,17 @@ namespace Negi0109.HistoryViewer.Models
             {
                 throw new FormatException();
             }
-            if (ulong.TryParse(name[(name.LastIndexOf('&') + 1)..], out ulong fileId))
+            if (ulong.TryParse(attributes[1][1..], out ulong fileId))
             {
                 _fileId = fileId;
             }
             else
             {
                 throw new FormatException();
+            }
+            for (var i = 2; i < attributes.Length; i++)
+            {
+                if (attributes[i].Equals("stripped")) _stripped = true;
             }
         }
 

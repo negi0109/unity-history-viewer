@@ -46,11 +46,20 @@ public class UnityYamlDocumentParserTest
         }
     }
 
-    [TestCase("!u!29 &1", 1, TestName = "case AnyObject")]
-    [TestCase("!u!1 &534047197", 534047197, TestName = "case GameObject")]
+    [TestCase("!u!29 &1", 1u, TestName = "case AnyObject")]
+    [TestCase("!u!1 &534047197", 534047197u, TestName = "case GameObject")]
+    [TestCase("!u!1 &534047197 stripped", 534047197u, TestName = "case GameObject(stripped)")]
     public void ParseFileId(string name, ulong fileId)
     {
         var doc = _factory.Get(name, "");
         Assert.That(doc.FileId, Is.EqualTo(fileId));
+    }
+
+    [TestCase("!u!1 &534047197 stripped", true, TestName = "Stripped")]
+    [TestCase("!u!1 &534047197", false, TestName = "no Stripped")]
+    public void ParseStripped(string name, bool stripped)
+    {
+        var doc = _factory.Get(name, "");
+        Assert.That(doc.Stripped, Is.EqualTo(stripped));
     }
 }
