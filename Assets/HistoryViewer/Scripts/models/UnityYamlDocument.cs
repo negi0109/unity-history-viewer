@@ -45,10 +45,11 @@ namespace Negi0109.HistoryViewer.Models
 
         public readonly string name;
         public readonly string content;
+        private readonly int _type;
+        private readonly ulong _fileId;
+        private readonly bool _stripped;
+
         private bool _contentCached = false;
-        private int _type;
-        private ulong _fileId;
-        private bool _stripped;
         private GameObjectYaml _gameObject;
         private AnyYaml _anyObject;
 
@@ -57,36 +58,32 @@ namespace Negi0109.HistoryViewer.Models
             this.name = name;
             this.content = content;
 
-            CacheName();
-        }
+            if (name != null)
+            {
+                var attributes = name.Split(' ');
+                var attribute0 = attributes[0].Split('!');
+                if (attribute0[1] != "u") throw new FormatException();
 
-        private void CacheName()
-        {
-            if (name == null) return;
-
-            var attributes = name.Split(' ');
-            var attribute0 = attributes[0].Split('!');
-            if (attribute0[1] != "u") throw new FormatException();
-
-            if (int.TryParse(attribute0[2], out int type))
-            {
-                _type = type;
-            }
-            else
-            {
-                throw new FormatException();
-            }
-            if (ulong.TryParse(attributes[1][1..], out ulong fileId))
-            {
-                _fileId = fileId;
-            }
-            else
-            {
-                throw new FormatException();
-            }
-            for (var i = 2; i < attributes.Length; i++)
-            {
-                if (attributes[i].Equals("stripped")) _stripped = true;
+                if (int.TryParse(attribute0[2], out int type))
+                {
+                    _type = type;
+                }
+                else
+                {
+                    throw new FormatException();
+                }
+                if (ulong.TryParse(attributes[1][1..], out ulong fileId))
+                {
+                    _fileId = fileId;
+                }
+                else
+                {
+                    throw new FormatException();
+                }
+                for (var i = 2; i < attributes.Length; i++)
+                {
+                    if (attributes[i].Equals("stripped")) _stripped = true;
+                }
             }
         }
 
