@@ -33,4 +33,25 @@ public class YamlUtilsTest
     {
         Assert.That(YamlUtils.IsDocumentDelimiter(text), Is.EqualTo(ret));
     }
+
+    [TestCase("   a: 1", "a", true)]
+    [TestCase("   a: {b: 1, a: 1}", "a", true)]
+    [TestCase("   a: {b: 1, a: 1}", "b", false)]
+    public void IsKey(string text, string key, bool ret)
+    {
+        Assert.That(YamlUtils.IsKey(text, key), Is.EqualTo(ret));
+    }
+
+    [TestCase("- a: 1", true)]
+    [TestCase("a: 1", false)]
+    [TestCase("  - a: 1", true)]
+    [TestCase("  a: 1", false)]
+    [TestCase("- a: {b: 1, c: 1}", true)]
+    [TestCase("a: {b: 1, c: 1}", false)]
+    [TestCase("  - a: {b: 1, c: 1}", true)]
+    [TestCase("    a: {b: 1, c: 1}", false)]
+    public void IsArrayElement(string text, bool ret)
+    {
+        Assert.That(YamlUtils.IsArrayElement(text), Is.EqualTo(ret));
+    }
 }

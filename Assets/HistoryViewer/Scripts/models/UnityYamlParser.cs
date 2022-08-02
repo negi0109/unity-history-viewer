@@ -7,7 +7,6 @@ namespace Negi0109.HistoryViewer.Models
 {
     public class UnityYamlParser
     {
-        private const string yamlDocumentDelimiter = "--- ";
         private readonly ILogger _logger;
         private readonly Dictionary<string, UnityYamlDocument> _pool;
 
@@ -28,10 +27,10 @@ namespace Negi0109.HistoryViewer.Models
             {
                 var line = reader.ReadLine();
 
-                if (line.StartsWith(yamlDocumentDelimiter))
+                if (YamlUtils.IsDocumentDelimiter(line))
                 {
                     yaml.AddYamlDocument(factory.Get(name, content.ToString()));
-                    name = line[yamlDocumentDelimiter.Length..];
+                    name = YamlUtils.GetDocumentName(line);
                     content = new StringBuilder();
                 }
 

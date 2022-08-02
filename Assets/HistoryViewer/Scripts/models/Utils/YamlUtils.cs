@@ -2,9 +2,10 @@ namespace Negi0109.HistoryViewer.Models
 {
     public static class YamlUtils
     {
-        private const string HashKeyValuePairDelimiter = ":";
-        private const string HashDelimiter = ",";
+        private const char HashKeyValuePairDelimiter = ':';
+        private const char HashDelimiter = ',';
         private const string yamlDocumentDelimiter = "--- ";
+        private const char SequenceEntry = '-';
 
         public static string GetInlineValue(string text, string key)
         {
@@ -37,6 +38,32 @@ namespace Negi0109.HistoryViewer.Models
         public static string GetDocumentName(string text)
         {
             return text[yamlDocumentDelimiter.Length..];
+        }
+
+        public static bool IsKey(string text, string key)
+        {
+            var len = key.Length;
+            var start = text.IndexOf(HashKeyValuePairDelimiter) - len;
+
+            if (start < 0) return false;
+
+            for (var i = 0; i < len; i++)
+            {
+                if (text[start + i] != key[i]) return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsArrayElement(string text)
+        {
+            for (var i = 0; i < text.Length; i++)
+            {
+                if (text[i] == ' ') continue;
+                return text[i] == SequenceEntry;
+            }
+
+            return false;
         }
     }
 }

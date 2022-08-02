@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Negi0109.HistoryViewer.Models
 {
@@ -17,10 +16,10 @@ namespace Negi0109.HistoryViewer.Models
             {
                 if (isComponents)
                 {
-                    if (line.IndexOf("- component: ") != -1)
+                    if (YamlUtils.IsArrayElement(line))
                     {
-                        if (ulong.TryParse(Regex.Match(line, @"\d+").Value, out ulong id))
-                            componentIds.Add(id);
+                        var fileID = YamlUtils.GetBlockValue(YamlUtils.GetInlineValue(line, "- component"), "fileID");
+                        if (ulong.TryParse(fileID, out ulong id)) componentIds.Add(id);
                         else throw new FormatException();
 
                         continue;
@@ -31,15 +30,15 @@ namespace Negi0109.HistoryViewer.Models
                     }
                 }
 
-                if (!isComponents && line.IndexOf("m_Component:") != -1)
+                if (!isComponents && YamlUtils.IsKey(line, "m_Component"))
                 {
                     isComponents = true;
                     continue;
                 }
 
-                if (name == null && line.IndexOf("m_Name: ") != -1)
+                if (name == null && YamlUtils.IsKey(line, "m_Name"))
                 {
-                    name = line[(line.IndexOf(":") + 2)..];
+                    name = YamlUtils.GetInlineValue(line, "m_Name");
                 }
             }
         }
