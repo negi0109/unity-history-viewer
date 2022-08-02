@@ -59,11 +59,11 @@ namespace Negi0109.HistoryViewer.Editors
                                 : GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId,
                                 out var gameObjectYaml))
                         {
-                            foreach (var componentId in gameObjectYaml.GameObject.componentIds)
+                            foreach (var componentId in gameObjectYaml.document.GameObject.componentIds)
                             {
                                 if (commit.unityYaml.TryGetComponent(componentId, out var componentYaml))
                                 {
-                                    EditorGUILayout.LabelField($"-- {componentYaml.AnyObject.name}");
+                                    EditorGUILayout.LabelField($"-- {componentYaml.document.AnyObject.name}");
                                 }
                             }
                         }
@@ -76,7 +76,7 @@ namespace Negi0109.HistoryViewer.Editors
                         EditorGUILayout.LabelField(commit.name);
                         foreach (var document in commit.unityYaml.gameObjectDocuments.Values)
                         {
-                            EditorGUILayout.LabelField($"-- {document.GameObject.name}");
+                            EditorGUILayout.LabelField($"-- {document.document.GameObject.name}");
                         }
                     }
                     // EditorGUILayout.LabelField(_target.name);

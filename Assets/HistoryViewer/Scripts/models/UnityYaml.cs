@@ -4,11 +4,11 @@ namespace Negi0109.HistoryViewer.Models
 {
     public class UnityYaml
     {
-        public UnityYamlDocument header;
-        public Dictionary<ulong, UnityYamlDocument> gameObjectDocuments = new();
-        public Dictionary<ulong, UnityYamlDocument> anyObjectDocuments = new();
+        public UnityYamlDocumentWithExtra header;
+        public Dictionary<ulong, UnityYamlDocumentWithExtra> gameObjectDocuments = new();
+        public Dictionary<ulong, UnityYamlDocumentWithExtra> anyObjectDocuments = new();
 
-        public bool TryGetGameObject(ulong id, out UnityYamlDocument yaml)
+        public bool TryGetGameObject(ulong id, out UnityYamlDocumentWithExtra yaml)
         {
             if (gameObjectDocuments.TryGetValue(id, out var value))
             {
@@ -22,7 +22,7 @@ namespace Negi0109.HistoryViewer.Models
             }
         }
 
-        public bool TryGetComponent(ulong componentId, out UnityYamlDocument yaml)
+        public bool TryGetComponent(ulong componentId, out UnityYamlDocumentWithExtra yaml)
         {
             if (anyObjectDocuments.TryGetValue(componentId, out var value))
             {
@@ -38,9 +38,11 @@ namespace Negi0109.HistoryViewer.Models
 
         public void AddYamlDocument(UnityYamlDocument document)
         {
-            if (document.IsGameObject) gameObjectDocuments.Add(document.FileId, document);
-            else if (document.IsAnyObject) anyObjectDocuments.Add(document.FileId, document);
-            else if (document.IsHeader) header = document;
+            var docEx = new UnityYamlDocumentWithExtra(document);
+
+            if (document.IsGameObject) gameObjectDocuments.Add(document.FileId, docEx);
+            else if (document.IsAnyObject) anyObjectDocuments.Add(document.FileId, docEx);
+            else if (document.IsHeader) header = docEx;
         }
     }
 }

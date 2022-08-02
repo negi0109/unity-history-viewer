@@ -46,8 +46,8 @@ GameObject:
     [Test]
     public void ParseHeader()
     {
-        Assert.That(_unityYaml.header.name, Is.Null);
-        Assert.That(_unityYaml.header.content, Is.EqualTo(@"%YAML 1.1
+        Assert.That(_unityYaml.header.document.name, Is.Null);
+        Assert.That(_unityYaml.header.document.content, Is.EqualTo(@"%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 "));
     }
@@ -55,8 +55,8 @@ GameObject:
     [Test]
     public void ParseGameObjects()
     {
-        Assert.That(_unityYaml.gameObjectDocuments[534047197].name, Is.EqualTo(@"!u!1 &534047197"));
-        Assert.That(_unityYaml.gameObjectDocuments[534047197].content, Is.EqualTo(@"--- !u!1 &534047197
+        Assert.That(_unityYaml.gameObjectDocuments[534047197].document.name, Is.EqualTo(@"!u!1 &534047197"));
+        Assert.That(_unityYaml.gameObjectDocuments[534047197].document.content, Is.EqualTo(@"--- !u!1 &534047197
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,8 +74,8 @@ GameObject:
     [Test]
     public void ParseAnyObjects()
     {
-        Assert.That(_unityYaml.anyObjectDocuments[1].name, Is.EqualTo(@"!u!29 &1"));
-        Assert.That(_unityYaml.anyObjectDocuments[1].content, Is.EqualTo(
+        Assert.That(_unityYaml.anyObjectDocuments[1].document.name, Is.EqualTo(@"!u!29 &1"));
+        Assert.That(_unityYaml.anyObjectDocuments[1].document.content, Is.EqualTo(
           @"--- !u!29 &1
 OcclusionCullingSettings:
   m_ObjectHideFlags: 0

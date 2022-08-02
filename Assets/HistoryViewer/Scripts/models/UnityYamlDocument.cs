@@ -4,6 +4,12 @@ using Negi0109.HistoryViewer.Interfaces;
 
 namespace Negi0109.HistoryViewer.Models
 {
+    /// <summary>
+    /// UnityYamlをドキュメント単位で解析し結果を格納するValueObject
+    /// </summary>
+    /// <remarks>
+    /// 他のドキュメントをもとに付与する情報は<see cref="UnityYamlDocumentExtra"/>で管理予定
+    /// </remarks>
     public class UnityYamlDocument
     {
         public bool IsHeader { get => name == null; }
