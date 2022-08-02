@@ -4,6 +4,7 @@ namespace Negi0109.HistoryViewer.Models
     {
         private const string HashKeyValuePairDelimiter = ":";
         private const string HashDelimiter = ",";
+        private const string yamlDocumentDelimiter = "--- ";
 
         public static string GetInlineValue(string text, string key)
         {
@@ -26,6 +27,16 @@ namespace Negi0109.HistoryViewer.Models
             {
                 return tmp1[(start + key.Length + 2)..end];
             }
+        }
+
+        public static bool IsDocumentDelimiter(string text)
+        {
+            return text.StartsWith(yamlDocumentDelimiter);
+        }
+
+        public static string GetDocumentName(string text)
+        {
+            return text[yamlDocumentDelimiter.Length..];
         }
     }
 }
