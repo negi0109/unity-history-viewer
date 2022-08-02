@@ -2,8 +2,7 @@
     "name": "TestUtils",
     "rootNamespace": "",
     "references": [
-        "GUID:7510bfbbe816b47908a401799e324039",
-        "GUID:0acc523941302664db1f4e527237feb3"
+        "GUID:7510bfbbe816b47908a401799e324039"
     ],
     "includePlatforms": [
         "Editor"
@@ -19,5 +18,5 @@
         "UNITY_INCLUDE_TESTS"
     ],
     "versionDefines": [],
-    "noEngineReferences": false
+    "noEngineReferences": true
 }
