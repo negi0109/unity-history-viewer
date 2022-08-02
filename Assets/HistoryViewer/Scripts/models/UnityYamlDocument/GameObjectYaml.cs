@@ -30,13 +30,16 @@ namespace Negi0109.HistoryViewer.Models
                     }
                 }
 
-                if (!isComponents && YamlUtils.IsKey(line, "m_Component"))
+                var key = YamlUtils.GetInlineKey(line);
+                if (key is null) continue;
+
+                if (!isComponents && key.Equals("m_Component"))
                 {
                     isComponents = true;
                     continue;
                 }
 
-                if (name == null && YamlUtils.IsKey(line, "m_Name"))
+                if (name == null && key.Equals("m_Name"))
                 {
                     name = YamlUtils.GetInlineValue(line, "m_Name");
                 }

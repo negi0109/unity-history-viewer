@@ -54,4 +54,11 @@ public class YamlUtilsTest
     {
         Assert.That(YamlUtils.IsArrayElement(text), Is.EqualTo(ret));
     }
+    [TestCase("  a1: {b: 1, c: 1}", "a1")]
+    [TestCase("a1: {b: 1, c: 1}", "a1")]
+    [TestCase("a1", null)]
+    public void GetInlineKey(string text, string key)
+    {
+        Assert.That(YamlUtils.GetInlineKey(text), Is.EqualTo(key));
+    }
 }

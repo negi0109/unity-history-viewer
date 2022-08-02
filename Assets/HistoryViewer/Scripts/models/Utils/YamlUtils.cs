@@ -7,6 +7,15 @@ namespace Negi0109.HistoryViewer.Models
         private const string yamlDocumentDelimiter = "--- ";
         private const char SequenceEntry = '-';
 
+        public static string GetInlineKey(string text)
+        {
+            var delimiter = text.IndexOf(HashKeyValuePairDelimiter);
+            if (delimiter == -1) return null;
+
+            var start = text.LastIndexOf(' ', delimiter);
+            return text[(start + 1)..delimiter];
+        }
+
         public static string GetInlineValue(string text, string key)
         {
             return text[(text.IndexOf(HashKeyValuePairDelimiter) + 2)..];

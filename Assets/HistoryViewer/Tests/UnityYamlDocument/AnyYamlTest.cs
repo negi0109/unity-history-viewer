@@ -30,5 +30,25 @@ AudioListener:
 
             Assert.That(yaml.name, Is.EqualTo(objectName));
         }
+
+        [TestCase("!u!81 &519420029",
+    @"--- !u!81 &519420029
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 519420028}
+", 519420028u, true)]
+        [TestCase("!u!81 &519420029",
+    @"--- !u!81 &519420029
+AudioListener:
+  m_ObjectHideFlags: 0
+", null, false)]
+        public void ParseGameObjectId(string name, string content, ulong gameObjectId, bool isBelongsToGameObject)
+        {
+            var doc = _factory.Get(name, content);
+            var yaml = new AnyYaml(doc);
+
+            Assert.That(yaml.gameObjectId, Is.EqualTo(gameObjectId));
+            Assert.That(yaml.IsBelongsToGameObject, Is.EqualTo(isBelongsToGameObject));
+        }
     }
 }
