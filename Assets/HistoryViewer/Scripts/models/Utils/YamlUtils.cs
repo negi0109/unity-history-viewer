@@ -8,13 +8,21 @@ namespace Negi0109.HistoryViewer.Models
         private const char SequenceEntry = '-';
         private const char IndentChar = ' ';
 
-        public static string GetInlineKey(string text, int startIndex = 0)
+        public static string GetInlineKey(string text)
         {
-            var delimiter = text.IndexOf(HashKeyValuePairDelimiter, startIndex);
+            var delimiter = text.IndexOf(HashKeyValuePairDelimiter);
             if (delimiter == -1) return null;
 
             var start = text.LastIndexOf(IndentChar, delimiter);
             return text[(start + 1)..delimiter];
+        }
+
+        public static string GetInlineKey(string text, int startIndex)
+        {
+            var delimiter = text.IndexOf(HashKeyValuePairDelimiter, startIndex);
+            if (delimiter == -1) return null;
+
+            return text[startIndex..delimiter];
         }
 
         public static string GetInlineValue(string text, string key, int startIndex = 0)
