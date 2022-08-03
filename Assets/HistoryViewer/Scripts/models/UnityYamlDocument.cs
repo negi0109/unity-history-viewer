@@ -53,6 +53,17 @@ namespace Negi0109.HistoryViewer.Models
             }
         }
 
+        public StrippedGameObjectYaml StrippedGameObject
+        {
+            get
+            {
+                CacheContent();
+
+                if (IsGameObject && Stripped) return _strippedGameObject;
+                return null;
+            }
+        }
+
 
         public ulong FileId
         {
@@ -73,6 +84,7 @@ namespace Negi0109.HistoryViewer.Models
         private GameObjectYaml _gameObject;
         private AnyYaml _anyObject;
         private PrefabYaml _prefabObject;
+        private StrippedGameObjectYaml _strippedGameObject;
 
         private UnityYamlDocument(string name, string content)
         {
@@ -115,6 +127,10 @@ namespace Negi0109.HistoryViewer.Models
             else if (IsPrefab)
             {
                 _prefabObject = new PrefabYaml(this);
+            }
+            else if (IsGameObject && Stripped)
+            {
+                _strippedGameObject = new StrippedGameObjectYaml(this);
             }
             else if (IsGameObject)
             {
