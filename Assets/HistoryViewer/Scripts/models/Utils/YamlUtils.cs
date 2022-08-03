@@ -8,18 +8,18 @@ namespace Negi0109.HistoryViewer.Models
         private const char SequenceEntry = '-';
         private const char IndentChar = ' ';
 
-        public static string GetInlineKey(string text)
+        public static string GetInlineKey(string text, int startIndex = 0)
         {
-            var delimiter = text.IndexOf(HashKeyValuePairDelimiter);
+            var delimiter = text.IndexOf(HashKeyValuePairDelimiter, startIndex);
             if (delimiter == -1) return null;
 
             var start = text.LastIndexOf(IndentChar, delimiter);
             return text[(start + 1)..delimiter];
         }
 
-        public static string GetInlineValue(string text, string key)
+        public static string GetInlineValue(string text, string key, int startIndex = 0)
         {
-            return text[(text.IndexOf(HashKeyValuePairDelimiter) + 2)..];
+            return text[(text.IndexOf(HashKeyValuePairDelimiter, startIndex) + 2)..];
         }
 
         public static string GetBlockValue(string text, string key)
@@ -65,6 +65,16 @@ namespace Negi0109.HistoryViewer.Models
             return true;
         }
 
+        public static bool IsKey(string text, string key, int startIndex)
+        {
+            for (var i = 0; i < key.Length; i++)
+            {
+                if (text[startIndex + i] != key[i]) return false;
+            }
+
+            return text[startIndex + key.Length] == HashKeyValuePairDelimiter;
+        }
+
         public static bool IsArrayElement(string text)
         {
             for (var i = 0; i < text.Length; i++)
@@ -74,6 +84,11 @@ namespace Negi0109.HistoryViewer.Models
             }
 
             return false;
+        }
+
+        public static bool IsArrayElement(string text, int startIndex)
+        {
+            return text[startIndex] == SequenceEntry;
         }
 
         public static int GetIndentSize(string text)

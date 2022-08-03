@@ -9,6 +9,7 @@ public class YamlUtilsTest
     public void GetInlineValueTest(string text, string key, string ret)
     {
         Assert.That(GetInlineValue(text, key), Is.EqualTo(ret));
+        Assert.That(GetInlineValue(text, key, GetIndentSize(text)), Is.EqualTo(ret));
     }
 
     [TestCase("{a1: b1}", "a1", "b1")]
@@ -41,6 +42,7 @@ public class YamlUtilsTest
     public void IsKeyTest(string text, string key, bool ret)
     {
         Assert.That(IsKey(text, key), Is.EqualTo(ret));
+        Assert.That(IsKey(text, key, GetIndentSize(text)), Is.EqualTo(ret));
     }
 
     [TestCase("- a: 1", true)]
@@ -54,6 +56,7 @@ public class YamlUtilsTest
     public void IsArrayElementTest(string text, bool ret)
     {
         Assert.That(IsArrayElement(text), Is.EqualTo(ret));
+        Assert.That(IsArrayElement(text, GetIndentSize(text)), Is.EqualTo(ret));
     }
 
     [TestCase("  a1: {b: 1, c: 1}", "a1")]
@@ -62,6 +65,7 @@ public class YamlUtilsTest
     public void GetInlineKeyTest(string text, string key)
     {
         Assert.That(GetInlineKey(text), Is.EqualTo(key));
+        Assert.That(GetInlineKey(text, GetIndentSize(text)), Is.EqualTo(key));
     }
 
     [TestCase("  a1: {b: 1, c: 1}", 2)]
