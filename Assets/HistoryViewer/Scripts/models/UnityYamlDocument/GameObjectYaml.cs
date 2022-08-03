@@ -10,36 +10,34 @@ namespace Negi0109.HistoryViewer.Models
 
         public GameObjectYaml(UnityYamlDocument doc)
         {
-            bool isComponents = false;
-
-            foreach (var line in doc.content.Split("\n"))
+            var lines = doc.content.Split("\n");
+            var len = lines.Length;
+            for (int i = 0; i < len; i++)
             {
-                if (isComponents)
-                {
-                    if (YamlUtils.IsArrayElement(line))
-                    {
-                        var fileID = YamlUtils.GetBlockValue(YamlUtils.GetInlineValue(line, "- component"), "fileID");
-                        if (ulong.TryParse(fileID, out ulong id)) componentIds.Add(id);
-                        else throw new FormatException();
+                var line = lines[i];
+                var lineIndex = YamlUtils.GetIndentSize(line);
+                var key = YamlUtils.GetInlineKey(line, lineIndex);
 
-                        continue;
-                    }
-                    else
+                if (string.IsNullOrEmpty(key)) continue;
+                else if (key.Equals("m_Component"))
+                {
+                    i++;
+                    for (; i < len; i++)
                     {
-                        isComponents = false;
+                        var componentLine = lines[i];
+                        var valueIndent = YamlUtils.GetIndentSize(componentLine);
+                        if (lineIndex == valueIndent && YamlUtils.IsArrayElement(componentLine, valueIndent))
+                        {
+                            var fileID = YamlUtils.GetBlockValue(YamlUtils.GetInlineValue(componentLine, "- component", valueIndent), "fileID");
+                            componentIds.Add(ulong.Parse(fileID));
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
-
-                var key = YamlUtils.GetInlineKey(line);
-                if (key is null) continue;
-
-                if (!isComponents && key.Equals("m_Component"))
-                {
-                    isComponents = true;
-                    continue;
-                }
-
-                if (name == null && key.Equals("m_Name"))
+                else if (key.Equals("m_Name"))
                 {
                     name = YamlUtils.GetInlineValue(line, "m_Name");
                 }
