@@ -38,6 +38,7 @@ namespace Negi0109.HistoryViewer.Models
             } while (!reader.EndOfStream);
 
             yaml.AddYamlDocument(factory.Get(name, content.ToString()));
+            yaml.DissolveAssociations();
 
             return yaml;
         }

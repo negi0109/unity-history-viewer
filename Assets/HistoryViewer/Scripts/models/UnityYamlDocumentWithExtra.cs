@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace Negi0109.HistoryViewer.Models
 {
     /// <summary>
@@ -11,9 +13,28 @@ namespace Negi0109.HistoryViewer.Models
     {
         public readonly UnityYamlDocument document;
 
+        public readonly List<UnityYamlDocument> components;
+        public UnityYamlDocumentWithExtra strippedGameObject;
+
+        public bool IsPrefab { get => document.IsPrefab; }
+        public bool IsAnyObject { get => document.IsAnyObject; }
+        public bool IsGameObject { get => document.IsGameObject; }
+        public bool Stripped { get => document.Stripped; }
+
         public UnityYamlDocumentWithExtra(UnityYamlDocument document)
         {
             this.document = document;
+            if (IsGameObject) components = new();
+        }
+
+        public void DissolveHasManyGameObject(UnityYamlDocumentWithExtra component)
+        {
+            components.Add(component.document);
+        }
+
+        public void DissolveHasOneStrippedGameObject(UnityYamlDocumentWithExtra gameObject)
+        {
+            strippedGameObject = gameObject;
         }
     }
 }

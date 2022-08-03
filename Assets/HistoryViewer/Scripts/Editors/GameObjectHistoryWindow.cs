@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using Negi0109.HistoryViewer.Models;
 using Negi0109.HistoryViewer.Middleware;
+using System.Collections.Generic;
 
 namespace Negi0109.HistoryViewer.Editors
 {
@@ -59,12 +60,28 @@ namespace Negi0109.HistoryViewer.Editors
                                 : GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId,
                                 out var gameObjectYaml))
                         {
-                            foreach (var componentId in gameObjectYaml.document.GameObject.componentIds)
+                            List<UnityYamlDocument> components = null;
+
+                            if (gameObjectYaml.Stripped) { }
+                            else if (gameObjectYaml.IsPrefab)
                             {
-                                if (commit.unityYaml.TryGetComponent(componentId, out var componentYaml))
-                                {
-                                    EditorGUILayout.LabelField($"-- {componentYaml.document.AnyObject.name}");
-                                }
+                                if (gameObjectYaml.strippedGameObject != null)
+                                    components = gameObjectYaml.strippedGameObject.components;
+                            }
+                            else if (gameObjectYaml.IsGameObject)
+                            {
+                                components = gameObjectYaml.components;
+                            }
+
+                            if (components == null)
+                            {
+                                EditorGUILayout.LabelField("-- no components?");
+                                continue;
+                            }
+
+                            foreach (var component in components)
+                            {
+                                EditorGUILayout.LabelField($"-- {component.AnyObject.name}");
                             }
                         }
                     }
