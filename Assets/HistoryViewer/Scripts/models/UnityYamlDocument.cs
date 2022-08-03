@@ -18,6 +18,7 @@ namespace Negi0109.HistoryViewer.Models
         {
             get => _type == 1;
         }
+        public bool IsPrefab { get => _type == 1001; }
 
         public GameObjectYaml GameObject
         {
@@ -40,6 +41,19 @@ namespace Negi0109.HistoryViewer.Models
                 return null;
             }
         }
+
+        public PrefabYaml PrefabObject
+        {
+            get
+            {
+                CacheContent();
+                if (IsPrefab) return _prefabObject;
+
+                return null;
+            }
+        }
+
+
         public ulong FileId
         {
             get => _fileId;
@@ -58,6 +72,7 @@ namespace Negi0109.HistoryViewer.Models
         private bool _contentCached = false;
         private GameObjectYaml _gameObject;
         private AnyYaml _anyObject;
+        private PrefabYaml _prefabObject;
 
         private UnityYamlDocument(string name, string content)
         {
@@ -97,6 +112,10 @@ namespace Negi0109.HistoryViewer.Models
         {
             if (_contentCached) return;
             if (IsHeader) { }
+            else if (IsPrefab)
+            {
+                _prefabObject = new PrefabYaml(this);
+            }
             else if (IsGameObject)
             {
                 _gameObject = new GameObjectYaml(this);
@@ -138,6 +157,7 @@ namespace Negi0109.HistoryViewer.Models
 
                     var doc = new UnityYamlDocument(name, content);
                     _pool.Add(content, doc);
+
                     return doc;
                 }
             }

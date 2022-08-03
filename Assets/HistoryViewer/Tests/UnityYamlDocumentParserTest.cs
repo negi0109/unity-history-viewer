@@ -36,6 +36,13 @@ public class UnityYamlDocumentParserTest
             var doc = _factory.Get(name, "");
             Assert.That(doc.IsAnyObject, Is.EqualTo(IsAnyObject));
         }
+        [TestCase("!u!1001 &1", true, TestName = "is PrefabObject")]
+        [TestCase("!u!1 &534047197", false, TestName = "is not PrefabObject")]
+        public void IsPrefabObject(string name, bool IsPrefab)
+        {
+            var doc = _factory.Get(name, "");
+            Assert.That(doc.IsPrefab, Is.EqualTo(IsPrefab));
+        }
 
         [TestCase(null, true, TestName = "is Header")]
         [TestCase("!u!1 &534047197", false, TestName = "is not Header")]
