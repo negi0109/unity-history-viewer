@@ -2,8 +2,7 @@
     "name": "HistoryViewerModel",
     "rootNamespace": "",
     "references": [
-        "GUID:b7c90106e220c4a7abd31d53231e3469",
-        "GUID:7510bfbbe816b47908a401799e324039"
+        "GUID:b7c90106e220c4a7abd31d53231e3469"
     ],
     "includePlatforms": [
         "Editor"
