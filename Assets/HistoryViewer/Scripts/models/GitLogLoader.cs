@@ -21,7 +21,7 @@ namespace Negi0109.HistoryViewer.Models
             var commitParser = new GitCommitParser();
 
             _git.ExecGitCommand(
-                $"log -n {_logMax} --pretty=\"{GitCommitParser.LogFormat}\" -- {target}",
+                $"log -n {_logMax} --pretty=\"{GitCommitParser.LogFormat}\" -- \"{target}\"",
                 reader =>
                 {
                     while (!reader.EndOfStream)

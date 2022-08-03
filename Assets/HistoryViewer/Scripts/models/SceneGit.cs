@@ -27,7 +27,7 @@ namespace Negi0109.HistoryViewer.Models
             foreach (var commit in commits)
             {
                 _git.ExecGitCommand(
-                    $"show {commit.hashId}:{_scenePath}",
+                    $"show {commit.hashId}:\"{_scenePath}\"",
                     reader =>
                     {
                         var parser = new UnityYamlParser(_unityYamlDocumentPool, _logger);

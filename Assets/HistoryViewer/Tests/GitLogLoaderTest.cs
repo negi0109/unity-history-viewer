@@ -9,7 +9,7 @@ public class GitLogLoaderTest
     {
         var git = new GitCommandExecutorStub(new Dictionary<string, string>
         {
-            { "log.* --pretty=\"%H%x09%s\".* -- path", $"{commit1id}\t{commit1name}\n{commit2id}\t{commit2name}\n" }
+            { "log.* --pretty=\"%H%x09%s\".* -- \"path\"", $"{commit1id}\t{commit1name}\n{commit2id}\t{commit2name}\n" }
         });
         var loader = new GitLogLoader(git);
         var commits = loader.Load("path");
