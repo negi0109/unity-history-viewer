@@ -6,13 +6,14 @@ namespace Negi0109.HistoryViewer.Models
         private const char HashDelimiter = ',';
         private const string yamlDocumentDelimiter = "--- ";
         private const char SequenceEntry = '-';
+        private const char IndentChar = ' ';
 
         public static string GetInlineKey(string text)
         {
             var delimiter = text.IndexOf(HashKeyValuePairDelimiter);
             if (delimiter == -1) return null;
 
-            var start = text.LastIndexOf(' ', delimiter);
+            var start = text.LastIndexOf(IndentChar, delimiter);
             return text[(start + 1)..delimiter];
         }
 
@@ -68,11 +69,22 @@ namespace Negi0109.HistoryViewer.Models
         {
             for (var i = 0; i < text.Length; i++)
             {
-                if (text[i] == ' ') continue;
+                if (text[i] == IndentChar) continue;
                 return text[i] == SequenceEntry;
             }
 
             return false;
+        }
+
+        public static int GetIndentSize(string text)
+        {
+            for (var i = 0; i < text.Length; i++)
+            {
+                if (text[i] == IndentChar) continue;
+                else return i;
+            }
+
+            return text.Length;
         }
     }
 }

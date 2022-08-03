@@ -54,11 +54,21 @@ public class YamlUtilsTest
     {
         Assert.That(YamlUtils.IsArrayElement(text), Is.EqualTo(ret));
     }
+
     [TestCase("  a1: {b: 1, c: 1}", "a1")]
     [TestCase("a1: {b: 1, c: 1}", "a1")]
     [TestCase("a1", null)]
     public void GetInlineKey(string text, string key)
     {
         Assert.That(YamlUtils.GetInlineKey(text), Is.EqualTo(key));
+    }
+
+    [TestCase("  a1: {b: 1, c: 1}", 2)]
+    [TestCase("      a1: {b: 1, c: 1}", 6)]
+    [TestCase("a1: {b: 1, c: 1}", 0)]
+    [TestCase("  ", 2)]
+    public void GetIndentSize(string text, int size)
+    {
+        Assert.That(YamlUtils.GetIndentSize(text), Is.EqualTo(size));
     }
 }
