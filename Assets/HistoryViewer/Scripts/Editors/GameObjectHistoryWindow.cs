@@ -113,9 +113,10 @@ namespace Negi0109.HistoryViewer.Editors
                 _logger ??= new BufferedLogger(new UnityLogger(), true);
 
                 var git = new GitCommandExecutor(_logger);
+                var fileLoader = new FileLoader(_logger);
 
                 _currentScene = SceneManager.GetActiveScene();
-                _sceneGit = new SceneGit(git, _currentScene.path, _logger);
+                _sceneGit = new SceneGit(git, fileLoader, _currentScene.path, _logger);
                 _sceneGit.LoadGitHistory();
             }
             finally
@@ -134,9 +135,10 @@ namespace Negi0109.HistoryViewer.Editors
                 _logger ??= new BufferedLogger(new UnityLogger(), true);
 
                 var git = new GitCommandExecutor(_logger);
+                var fileLoader = new FileLoader(_logger);
 
                 _currentPrefab = PrefabStageUtility.GetCurrentPrefabStage().assetPath;
-                _prefabGit = new SceneGit(git, _currentPrefab, _logger);
+                _prefabGit = new SceneGit(git, fileLoader, _currentPrefab, _logger);
                 _prefabGit.LoadGitHistory();
             }
             finally
