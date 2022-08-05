@@ -151,7 +151,7 @@ namespace Negi0109.HistoryViewer.Models
 
             public Factory(Dictionary<string, UnityYamlDocument> pool = null, ILogger logger = null)
             {
-                _pool = pool;
+                _pool = pool ?? new();
                 _logger = logger;
             }
 
