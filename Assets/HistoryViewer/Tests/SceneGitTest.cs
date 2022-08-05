@@ -18,12 +18,12 @@ public class SceneGitTest
             public void SetUP()
             {
                 _gitDic = new()
-            {
                 {
-                    "log.* --pretty=\"%H%x09%s\".* -- \"path\"",
-                    "a1\tcommit1\na2\tcommit2"
-                },
-                {
+                    {
+                        "log.* --pretty=\"%H%x09%s\".* -- \"path\"",
+                        "a1\tcommit1\na2\tcommit2"
+                    },
+                    {
                     "show a1:\"path\"",
                     @"%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
@@ -32,31 +32,31 @@ GameObject:
   m_Name: Sample Object a1
   m_IsActive: 1
 "
-                },
-                {
-                    "show a2:\"path\"",
-                    @"%YAML 1.1
+                    },
+                    {
+                        "show a2:\"path\"",
+                        @"%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &490523428
 GameObject:
   m_Name: Sample Object a2
   m_IsActive: 1
 "
-                }
-            };
+                    }
+                };
                 _fileDic = new()
-            {
                 {
-                    "path",
-                    @"%YAML 1.1
+                    {
+                        "path",
+                        @"%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &490523428
 GameObject:
   m_Name: Sample Object Current
   m_IsActive: 1
 "
-                }
-            };
+                    }
+                };
                 _git = new GitCommandExecutorStub(_gitDic);
                 _fileLoader = new FileLoaderStub(_fileDic);
             }
