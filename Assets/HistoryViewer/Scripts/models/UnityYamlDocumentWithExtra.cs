@@ -39,9 +39,11 @@ namespace Negi0109.HistoryViewer.Models
 
         public override bool Equals(object obj)
         {
-            if (obj == null || this.GetType() != obj.GetType()) return false;
+            if (obj == null || GetType() != obj.GetType()) return false;
+            var another = (UnityYamlDocumentWithExtra)obj;
 
-            if (!document.Equals(document)) return false;
+            if (document != another.document) return false;
+
 
             return true;
         }
