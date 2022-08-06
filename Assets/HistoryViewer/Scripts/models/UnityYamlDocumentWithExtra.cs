@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Negi0109.HistoryViewer.Models
 {
@@ -13,7 +14,7 @@ namespace Negi0109.HistoryViewer.Models
     {
         public readonly UnityYamlDocument document;
 
-        public readonly List<UnityYamlDocument> components;
+        public readonly Dictionary<ulong, UnityYamlDocument> components;
         public UnityYamlDocumentWithExtra strippedGameObject;
 
         public bool IsPrefab { get => document.IsPrefab; }
@@ -29,7 +30,7 @@ namespace Negi0109.HistoryViewer.Models
 
         public void DissolveHasManyGameObject(UnityYamlDocumentWithExtra component)
         {
-            components.Add(component.document);
+            components.Add(component.document.FileId, component.document);
         }
 
         public void DissolveHasOneStrippedGameObject(UnityYamlDocumentWithExtra gameObject)
@@ -40,10 +41,21 @@ namespace Negi0109.HistoryViewer.Models
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType()) return false;
+
             var another = (UnityYamlDocumentWithExtra)obj;
 
             if (document != another.document) return false;
 
+            foreach (var sameKey in Enumerable.Intersect(components.Keys, another.components.Keys))
+            {
+                if (!components[sameKey].Equals(another.components[sameKey]))
+                {
+                    return false;
+                }
+            }
+
+            if (another.components.Keys.Except(components.Keys).Any()) return false;
+            if (components.Keys.Except(another.components.Keys).Any()) return false;
 
             return true;
         }

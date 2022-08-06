@@ -60,17 +60,17 @@ namespace Negi0109.HistoryViewer.Editors
                                 : GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId,
                                 out var gameObjectYaml))
                         {
-                            List<UnityYamlDocument> components = null;
+                            IEnumerable<UnityYamlDocument> components = null;
 
                             if (gameObjectYaml.Stripped) { }
                             else if (gameObjectYaml.IsPrefab)
                             {
                                 if (gameObjectYaml.strippedGameObject != null)
-                                    components = gameObjectYaml.strippedGameObject.components;
+                                    components = gameObjectYaml.strippedGameObject.components.Values;
                             }
                             else if (gameObjectYaml.IsGameObject)
                             {
-                                components = gameObjectYaml.components;
+                                components = gameObjectYaml.components.Values;
                             }
 
                             if (components == null)
