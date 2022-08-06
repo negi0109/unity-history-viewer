@@ -4,15 +4,15 @@ using Negi0109.HistoryViewer.Models;
 
 public class ObjectCommitDiffTest
 {
-    private UnityYamlDocument.Factory _factory;
+    private static UnityYamlDocument.Factory _factory;
 
     [SetUp]
-    public void SetUp()
+    public static void SetUp()
     {
         _factory = new UnityYamlDocument.Factory();
     }
 
-    public UnityYamlDocument GetDocument(string content)
+    public static UnityYamlDocument GetDocument(string content)
     {
         return _factory.Get(content[4..content.IndexOf('\n')], content);
     }
@@ -203,5 +203,72 @@ Transform:
 
         var diff = new ObjectCommitDiff(targetId, commit1, commit2);
         Assert.That(diff.IsSame, Is.EqualTo(IsSame));
+    }
+
+    public class GetCommitDiff
+    {
+        [TestCase(
+          1823714741u,
+          @"--- !u!1 &1823714741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  serializedVersion: 6
+  m_Name: Sample Object1",
+        @"--- !u!1 &1823714741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  serializedVersion: 6
+  m_Name: Sample Object2",
+          ObjectCommitDiff.CommitDiff.State.Change, TestName = "Change"
+        )]
+        [TestCase(
+          1823714741u,
+          @"--- !u!1 &1823714741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  serializedVersion: 6
+  m_Name: Sample Object1",
+        @"--- !u!1 &11
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  serializedVersion: 6
+  m_Name: Sample Object1",
+          ObjectCommitDiff.CommitDiff.State.Destroy, TestName = "Destroy"
+        )]
+        [TestCase(
+          1823714741u,
+          @"--- !u!1 &11
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  serializedVersion: 6
+  m_Name: Sample Object1",
+        @"--- !u!1 &1823714741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  serializedVersion: 6
+  m_Name: Sample Object1",
+          ObjectCommitDiff.CommitDiff.State.Add, TestName = "Add"
+        )]
+        public void GetCommitGameObject(ulong targetId, string commit1gameObject, string commit2gameObject, ObjectCommitDiff.CommitDiff.State diffState)
+        {
+            GitCommit commit1 = new("1", "commit 1");
+            commit1.unityYaml = new();
+            commit1.unityYaml.AddYamlDocument(GetDocument(commit1gameObject));
+            commit1.unityYaml.DissolveAssociations();
+
+            GitCommit commit2 = new("2", "commit 2");
+            commit2.unityYaml = new();
+            commit2.unityYaml.AddYamlDocument(GetDocument(commit2gameObject));
+            commit2.unityYaml.DissolveAssociations();
+
+            var diff = new ObjectCommitDiff(targetId, commit1, commit2);
+            Assert.That(diff.Diff.gameObject.state, Is.EqualTo(diffState));
+        }
     }
 }

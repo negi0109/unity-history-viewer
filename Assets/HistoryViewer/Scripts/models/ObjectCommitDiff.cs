@@ -4,7 +4,7 @@ namespace Negi0109.HistoryViewer.Models
     {
         public class CommitDiff
         {
-            public enum DiffState
+            public enum State
             {
                 Add,
                 Destroy,
@@ -13,7 +13,7 @@ namespace Negi0109.HistoryViewer.Models
 
             public class GameObject
             {
-                public DiffState diffState;
+                public State state;
             }
 
             public GameObject gameObject;
@@ -55,14 +55,14 @@ namespace Negi0109.HistoryViewer.Models
 
             if (srcObject == null && destObject == null) { }
             else if (srcObject == null && destObject != null)
-                _commitDiff.gameObject = new CommitDiff.GameObject() { diffState = CommitDiff.DiffState.Add };
+                _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.State.Add };
             else if (srcObject != null && destObject == null)
-                _commitDiff.gameObject = new CommitDiff.GameObject() { diffState = CommitDiff.DiffState.Destroy };
+                _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.State.Destroy };
             else if (srcObject != null && destObject != null)
             {
                 if (srcObject.document != destObject.document)
                 {
-                    _commitDiff.gameObject = new CommitDiff.GameObject() { diffState = CommitDiff.DiffState.Change };
+                    _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.State.Change };
                 }
             }
         }

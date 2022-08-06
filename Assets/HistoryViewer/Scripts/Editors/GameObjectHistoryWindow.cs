@@ -84,15 +84,15 @@ namespace Negi0109.HistoryViewer.Editors
                                 var commitDiff = diff.Diff;
                                 if (commitDiff.gameObject != null)
                                 {
-                                    switch (commitDiff.gameObject.diffState)
+                                    switch (commitDiff.gameObject.state)
                                     {
-                                        case ObjectCommitDiff.CommitDiff.DiffState.Add:
+                                        case ObjectCommitDiff.CommitDiff.State.Add:
                                             EditorGUILayout.LabelField("Create");
                                             break;
-                                        case ObjectCommitDiff.CommitDiff.DiffState.Destroy:
+                                        case ObjectCommitDiff.CommitDiff.State.Destroy:
                                             EditorGUILayout.LabelField("Destroy");
                                             break;
-                                        case ObjectCommitDiff.CommitDiff.DiffState.Change:
+                                        case ObjectCommitDiff.CommitDiff.State.Change:
                                             EditorGUILayout.LabelField("Change");
                                             break;
                                     }
