@@ -77,6 +77,21 @@ GameObject:
   serializedVersion: 6
         ", false, TestName = "Created GameObject"
     )]
+    [TestCase(
+        0u,
+        @"--- !u!1 &1823714741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  serializedVersion: 6
+        ",
+        @"--- !u!1 &1823714741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  serializedVersion: 6
+        ", false, TestName = "Nothing GameObject"
+    )]
     public void ObjectDiff(ulong targetId, string commit1gameObject, string commit2gameObject, bool IsSame)
     {
         GitCommit commit1 = new("1", "commit 1");

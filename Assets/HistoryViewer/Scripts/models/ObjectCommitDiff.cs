@@ -37,7 +37,14 @@ namespace Negi0109.HistoryViewer.Models
         public readonly UnityYamlDocumentWithExtra srcObject;
         public readonly UnityYamlDocumentWithExtra destObject;
 
-        public bool IsSame { get => srcObject?.Equals(destObject) ?? false; }
+        public bool IsSame
+        {
+            get
+            {
+                if (srcObject == null && destObject == null) return true;
+                return srcObject?.Equals(destObject) ?? false;
+            }
+        }
 
         public ObjectCommitDiff(ulong targetId, GitCommit src, GitCommit dest)
         {
