@@ -51,6 +51,17 @@ public class UnityYamlDocumentParserTest
             var doc = _factory.Get(name, "");
             Assert.That(doc.IsHeader, Is.EqualTo(IsHeader));
         }
+
+        [TestCase(null, ComponentType.Header, TestName = "Header")]
+        [TestCase("!u!1 &534047197", ComponentType.GameObject, TestName = "GameObject")]
+        [TestCase("!u!1 &534047197 stripped", ComponentType.StrippedGameObject, TestName = "StrippedGameObject")]
+        [TestCase("!u!29 &1", ComponentType.OtherComponent, TestName = "OtherComponent")]
+        [TestCase("!u!1001 &1", ComponentType.PrefabInstance, TestName = "PrefabInstance")]
+        public void ParseComponentType(string name, ComponentType componentType)
+        {
+            var doc = _factory.Get(name, "");
+            Assert.That(doc.componentType, Is.EqualTo(componentType));
+        }
     }
 
     [TestCase("!u!29 &1", 1u, TestName = "case AnyObject")]

@@ -76,6 +76,8 @@ namespace Negi0109.HistoryViewer.Models
 
         public readonly string name;
         public readonly string content;
+        public readonly ComponentType componentType;
+
         private readonly int _type;
         private readonly ulong _fileId;
         private readonly bool _stripped;
@@ -118,6 +120,12 @@ namespace Negi0109.HistoryViewer.Models
                     if (attributes[i].Equals("stripped")) _stripped = true;
                 }
             }
+
+            if (IsHeader) componentType = ComponentType.Header;
+            else if (IsPrefab) componentType = ComponentType.PrefabInstance;
+            else if (IsGameObject && Stripped) componentType = ComponentType.StrippedGameObject;
+            else if (IsGameObject) componentType = ComponentType.GameObject;
+            else if (IsAnyObject) componentType = ComponentType.OtherComponent;
         }
 
         private void CacheContent()
