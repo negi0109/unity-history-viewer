@@ -19,6 +19,7 @@ namespace Negi0109.HistoryViewer.Editors
         private BufferedLogger _logger;
 
         private List<ObjectCommitDiff> diffs;
+        private string _commitId = "";
 
 
         [MenuItem("Histories/GameObject")]
@@ -66,8 +67,23 @@ namespace Negi0109.HistoryViewer.Editors
 
                     foreach (var diff in diffs)
                     {
-                        GUI.enabled = !diff.IsSame;
-                        EditorGUILayout.LabelField(diff.dest.name);
+                        if (diff.IsSame)
+                        {
+                            GUI.enabled = false;
+                            EditorGUILayout.LabelField(diff.dest.name);
+                        }
+                        else
+                        {
+                            GUI.enabled = true;
+                            var opened = string.Equals(_commitId, diff.dest.hashId);
+                            var fold = EditorGUILayout.BeginFoldoutHeaderGroup(opened, diff.dest.name);
+                            if (opened && !fold) _commitId = "";
+                            if (fold)
+                            {
+                                _commitId = diff.dest.hashId;
+                            }
+                            EditorGUILayout.EndFoldoutHeaderGroup();
+                        }
                     }
                     GUI.enabled = true;
                 }
