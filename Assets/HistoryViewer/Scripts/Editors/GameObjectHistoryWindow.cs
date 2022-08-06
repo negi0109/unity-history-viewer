@@ -67,7 +67,8 @@ namespace Negi0109.HistoryViewer.Editors
 
                     foreach (var diff in diffs)
                     {
-                        if (diff.IsSame)
+                        if (diff.IsNotExist) { }
+                        else if (diff.IsSame)
                         {
                             GUI.enabled = false;
                             EditorGUILayout.LabelField(diff.dest.name);

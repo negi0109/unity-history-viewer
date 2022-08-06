@@ -90,7 +90,7 @@ GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   serializedVersion: 6
-        ", false, TestName = "Nothing GameObject"
+        ", true, TestName = "Nothing GameObject"
     )]
     public void ObjectDiff(ulong targetId, string commit1gameObject, string commit2gameObject, bool IsSame)
     {

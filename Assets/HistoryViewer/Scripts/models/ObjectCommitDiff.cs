@@ -37,11 +37,13 @@ namespace Negi0109.HistoryViewer.Models
         public readonly UnityYamlDocumentWithExtra srcObject;
         public readonly UnityYamlDocumentWithExtra destObject;
 
+        public bool IsNotExist { get => srcObject == null && destObject == null; }
+
         public bool IsSame
         {
             get
             {
-                if (srcObject == null && destObject == null) return true;
+                if (IsNotExist) return true;
                 return srcObject?.Equals(destObject) ?? false;
             }
         }
