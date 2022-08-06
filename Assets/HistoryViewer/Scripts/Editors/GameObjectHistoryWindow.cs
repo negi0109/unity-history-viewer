@@ -18,6 +18,8 @@ namespace Negi0109.HistoryViewer.Editors
 
         private BufferedLogger _logger;
 
+        private List<ObjectCommitDiff> diffs;
+
 
         [MenuItem("Histories/GameObject")]
         private static void CreateWindow()
@@ -29,12 +31,14 @@ namespace Negi0109.HistoryViewer.Editors
         {
             var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
             var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
+
             if (currentGit == null)
             {
                 if (isPrefabMode) InitPrefab();
                 else InitScene();
 
                 currentGit = isPrefabMode ? _prefabGit : _sceneGit;
+                _target = null;
             }
 
             try
@@ -44,47 +48,28 @@ namespace Negi0109.HistoryViewer.Editors
                 {
                     // Debug.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
                     _target = Selection.activeTransform?.gameObject;
+                    diffs = new();
+
+                    var targetId = isPrefabMode ?
+                                GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId
+                                : GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId;
+
+                    for (var i = 1; i < currentGit.commits.Count; i++)
+                    {
+                        diffs.Add(new ObjectCommitDiff(targetId, currentGit.commits[i], currentGit.commits[i - 1]));
+                    }
                 }
 
                 if (_target != null)
                 {
                     EditorGUILayout.LabelField(_target.name);
 
-                    foreach (var commit in currentGit.commits)
+                    foreach (var diff in diffs)
                     {
-                        EditorGUILayout.LabelField(commit.name);
-                        if (
-                            commit.unityYaml.TryGetGameObject(
-                                isPrefabMode ?
-                                GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId
-                                : GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId,
-                                out var gameObjectYaml))
-                        {
-                            IEnumerable<UnityYamlDocument> components = null;
-
-                            if (gameObjectYaml.Stripped) { }
-                            else if (gameObjectYaml.IsPrefab)
-                            {
-                                if (gameObjectYaml.strippedGameObject != null)
-                                    components = gameObjectYaml.strippedGameObject.components.Values;
-                            }
-                            else if (gameObjectYaml.IsGameObject)
-                            {
-                                components = gameObjectYaml.components.Values;
-                            }
-
-                            if (components == null)
-                            {
-                                EditorGUILayout.LabelField("-- no components?");
-                                continue;
-                            }
-
-                            foreach (var component in components)
-                            {
-                                EditorGUILayout.LabelField($"-- {component.AnyObject.name}");
-                            }
-                        }
+                        GUI.enabled = !diff.IsSame;
+                        EditorGUILayout.LabelField(diff.dest.name);
                     }
+                    GUI.enabled = true;
                 }
                 else
                 {
