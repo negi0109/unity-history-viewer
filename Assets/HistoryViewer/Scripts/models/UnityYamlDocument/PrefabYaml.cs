@@ -16,34 +16,18 @@ namespace Negi0109.HistoryViewer.Models
                 var key = YamlUtils.GetInlineKey(line, indent);
                 if (string.IsNullOrEmpty(key)) continue;
 
-                if (key.Equals("m_Modification"))
+                if (key.Equals("m_Modifications"))
                 {
                     i++;
-                    for (; i < lines.Length; i++)
+                    var line2 = lines[i];
+                    var indent2 = YamlUtils.GetIndentSize(line2);
+                    var key2 = YamlUtils.GetInlineKey(line2);
+                    if (key2.Equals("target"))
                     {
-                        var line1 = lines[i];
-                        var indent1 = YamlUtils.GetIndentSize(line1);
-                        if (indent1 <= indent)
-                        {
-                            i--;
-                            break;
-                        }
-                        var key1 = YamlUtils.GetInlineKey(line1);
+                        var blockValue = YamlUtils.GetInlineValue(line2, key2, indent2);
+                        correspondingSourceObjectId = ulong.Parse(YamlUtils.GetBlockValue(blockValue, "fileID"));
 
-                        if (key1.Equals("m_Modifications"))
-                        {
-                            i++;
-                            var line2 = lines[i];
-                            var indent2 = YamlUtils.GetIndentSize(line2);
-                            var key2 = YamlUtils.GetInlineKey(line2);
-                            if (key2.Equals("target"))
-                            {
-                                var blockValue = YamlUtils.GetInlineValue(line2, key2, indent2);
-                                correspondingSourceObjectId = ulong.Parse(YamlUtils.GetBlockValue(blockValue, "fileID"));
-
-                                break;
-                            }
-                        }
+                        break;
                     }
                 }
             }

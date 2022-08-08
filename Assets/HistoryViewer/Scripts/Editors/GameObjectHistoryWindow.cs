@@ -52,14 +52,8 @@ namespace Negi0109.HistoryViewer.Editors
                     _target = Selection.activeTransform?.gameObject;
                     diffs = new();
                     ulong targetId;
-                    if (GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId == 0)
-                    {
-                        targetId = GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId;
-                    }
-                    else
-                    {
-                        targetId = GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId ^ GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId;
-                    }
+                    targetId = GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId
+                                ^ GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId;
 
                     for (var i = 1; i < currentGit.commits.Count; i++)
                     {
