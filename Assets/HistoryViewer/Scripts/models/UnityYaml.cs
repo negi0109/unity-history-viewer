@@ -41,7 +41,7 @@ namespace Negi0109.HistoryViewer.Models
             var docEx = new UnityYamlDocumentWithExtra(document);
 
             if (document.IsGameObject) gameObjectDocuments.Add(document.FileId, docEx);
-            else if (document.IsPrefab) gameObjectDocuments.Add(document.FileId, docEx);
+            else if (document.IsPrefab) anyObjectDocuments.Add(document.FileId, docEx);
             else if (document.IsAnyObject) anyObjectDocuments.Add(document.FileId, docEx);
             else if (document.IsHeader) header = docEx;
         }
@@ -51,27 +51,50 @@ namespace Negi0109.HistoryViewer.Models
         /// </summary>
         public void DissolveAssociations()
         {
-            // Component側からGameObjectへ登録
-            foreach (var component in anyObjectDocuments.Values)
-            {
-                var componentYaml = component.document.AnyObject;
-
-                if (componentYaml.IsBelongsToGameObject)
-                {
-                    if (gameObjectDocuments.TryGetValue(componentYaml.gameObjectId, out var val))
-                    {
-                        val.DissolveHasManyGameObject(component);
-                    }
-                }
-            }
-
+            Dictionary<ulong, UnityYamlDocumentWithExtra> tmpGameObjectDocuments = new();
             foreach (var gameObject in gameObjectDocuments.Values)
             {
                 if (gameObject.Stripped)
                 {
-                    if (gameObjectDocuments.TryGetValue(gameObject.document.StrippedGameObject.prefabId, out var prefab))
+                    if (anyObjectDocuments.TryGetValue(gameObject.document.StrippedGameObject.prefabId, out var prefab))
                     {
-                        prefab.strippedGameObject = gameObject;
+                        gameObject.SetPrefabInstance(prefab);
+
+                        var strippedGameObjectId = prefab.document.FileId ^ prefab.document.PrefabObject.correspondingSourceObjectId;
+                        tmpGameObjectDocuments.Add(strippedGameObjectId, gameObject);
+                    }
+                }
+            }
+            foreach (var tmp in tmpGameObjectDocuments)
+            {
+                gameObjectDocuments.Add(tmp.Key, tmp.Value);
+            }
+
+
+            // Component側からGameObjectへ登録
+            foreach (var component in anyObjectDocuments.Values)
+            {
+                if (component.IsPrefab)
+                {
+                    if (component.strippedGameObject == null)
+                    {
+                        var strippedObject = new UnityYamlDocumentWithExtra(null);
+                        var strippedGameObjectId = component.document.FileId ^ component.document.PrefabObject.correspondingSourceObjectId;
+
+                        strippedObject.SetPrefabInstance(component);
+                        gameObjectDocuments.Add(strippedGameObjectId, strippedObject);
+                    }
+                }
+                else if (component.IsAnyObject)
+                {
+                    var componentYaml = component.document.AnyObject;
+
+                    if (componentYaml.IsBelongsToGameObject)
+                    {
+                        if (gameObjectDocuments.TryGetValue(componentYaml.gameObjectId, out var val))
+                        {
+                            val.DissolveHasManyGameObject(component);
+                        }
                     }
                 }
             }

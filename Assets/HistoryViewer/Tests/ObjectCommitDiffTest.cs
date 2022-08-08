@@ -236,7 +236,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 0}
   serializedVersion: 6
   m_Name: Sample Object2",
-          ObjectCommitDiff.CommitDiff.State.Change, TestName = "Change"
+          ObjectCommitDiff.CommitDiff.GameObjectState.Change, TestName = "Change"
         )]
         [TestCase(
           1823714741u,
@@ -252,7 +252,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 0}
   serializedVersion: 6
   m_Name: Sample Object1",
-          ObjectCommitDiff.CommitDiff.State.Destroy, TestName = "Destroy"
+          ObjectCommitDiff.CommitDiff.GameObjectState.Destroy, TestName = "Destroy"
         )]
         [TestCase(
           1823714741u,
@@ -268,9 +268,9 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 0}
   serializedVersion: 6
   m_Name: Sample Object1",
-          ObjectCommitDiff.CommitDiff.State.Add, TestName = "Add"
+          ObjectCommitDiff.CommitDiff.GameObjectState.Add, TestName = "Add"
         )]
-        public void GetCommitGameObject(ulong targetId, string commit1gameObject, string commit2gameObject, ObjectCommitDiff.CommitDiff.State diffState)
+        public void GetCommitGameObject(ulong targetId, string commit1gameObject, string commit2gameObject, ObjectCommitDiff.CommitDiff.GameObjectState diffState)
         {
             GitCommit commit1 = new("1", "commit 1");
             commit1.unityYaml = new();

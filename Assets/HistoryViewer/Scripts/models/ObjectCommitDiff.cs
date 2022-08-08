@@ -4,16 +4,18 @@ namespace Negi0109.HistoryViewer.Models
     {
         public class CommitDiff
         {
-            public enum State
+            public enum GameObjectState
             {
                 Add,
                 Destroy,
-                Change
+                Change,
+                GameObjectToPrefab,
+                PrefabToGameObject,
             }
 
             public class GameObject
             {
-                public State state;
+                public GameObjectState state;
             }
 
             public GameObject gameObject;
@@ -64,14 +66,18 @@ namespace Negi0109.HistoryViewer.Models
 
             if (srcObject == null && destObject == null) { }
             else if (srcObject == null && destObject != null)
-                _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.State.Add };
+                _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.Add };
             else if (srcObject != null && destObject == null)
-                _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.State.Destroy };
+                _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.Destroy };
+            else if (srcObject.Stripped && destObject.IsGameObject)
+                _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.PrefabToGameObject };
+            else if (srcObject.IsGameObject && destObject.Stripped)
+                _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.GameObjectToPrefab };
             else if (srcObject != null && destObject != null)
             {
                 if (srcObject.document != destObject.document)
                 {
-                    _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.State.Change };
+                    _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.Change };
                 }
             }
         }

@@ -16,11 +16,13 @@ namespace Negi0109.HistoryViewer.Models
 
         public readonly Dictionary<ulong, UnityYamlDocument> components;
         public UnityYamlDocumentWithExtra strippedGameObject;
+        public UnityYamlDocumentWithExtra prefabInstance;
 
-        public bool IsPrefab { get => document.IsPrefab; }
-        public bool IsAnyObject { get => document.IsAnyObject; }
-        public bool IsGameObject { get => document.IsGameObject; }
-        public bool Stripped { get => document.Stripped; }
+        public bool IsPrefab { get => !IsVirtual && document.IsPrefab; }
+        public bool IsAnyObject { get => !IsVirtual && document.IsAnyObject; }
+        public bool IsGameObject { get => !IsVirtual && document.IsGameObject; }
+        public bool Stripped { get => IsVirtual || document.Stripped; }
+        public bool IsVirtual { get => document == null; }
 
         public UnityYamlDocumentWithExtra(UnityYamlDocument document)
         {
@@ -36,6 +38,12 @@ namespace Negi0109.HistoryViewer.Models
         public void DissolveHasOneStrippedGameObject(UnityYamlDocumentWithExtra gameObject)
         {
             strippedGameObject = gameObject;
+        }
+
+        public void SetPrefabInstance(UnityYamlDocumentWithExtra prefab)
+        {
+            prefab.strippedGameObject = this;
+            prefabInstance = prefab;
         }
 
         public override bool Equals(object obj)

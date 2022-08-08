@@ -47,13 +47,19 @@ namespace Negi0109.HistoryViewer.Editors
                 // ゲームオブジェクトの選択
                 if (_target != Selection.activeTransform?.gameObject)
                 {
-                    // Debug.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
+                    _logger.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
+
                     _target = Selection.activeTransform?.gameObject;
                     diffs = new();
-
-                    var targetId = isPrefabMode ?
-                                GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId
-                                : GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId;
+                    ulong targetId;
+                    if (GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId == 0)
+                    {
+                        targetId = GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId;
+                    }
+                    else
+                    {
+                        targetId = GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId ^ GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId;
+                    }
 
                     for (var i = 1; i < currentGit.commits.Count; i++)
                     {
@@ -87,14 +93,20 @@ namespace Negi0109.HistoryViewer.Editors
                                 {
                                     switch (commitDiff.gameObject.state)
                                     {
-                                        case ObjectCommitDiff.CommitDiff.State.Add:
+                                        case ObjectCommitDiff.CommitDiff.GameObjectState.Add:
                                             EditorGUILayout.LabelField("Create");
                                             break;
-                                        case ObjectCommitDiff.CommitDiff.State.Destroy:
+                                        case ObjectCommitDiff.CommitDiff.GameObjectState.Destroy:
                                             EditorGUILayout.LabelField("Destroy");
                                             break;
-                                        case ObjectCommitDiff.CommitDiff.State.Change:
+                                        case ObjectCommitDiff.CommitDiff.GameObjectState.Change:
                                             EditorGUILayout.LabelField("Change");
+                                            break;
+                                        case ObjectCommitDiff.CommitDiff.GameObjectState.GameObjectToPrefab:
+                                            EditorGUILayout.LabelField("to Prefab");
+                                            break;
+                                        case ObjectCommitDiff.CommitDiff.GameObjectState.PrefabToGameObject:
+                                            EditorGUILayout.LabelField("to GameObject");
                                             break;
                                     }
                                 }
