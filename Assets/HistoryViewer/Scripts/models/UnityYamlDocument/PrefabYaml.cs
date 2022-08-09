@@ -9,6 +9,8 @@ namespace Negi0109.HistoryViewer.Models
             // TODO リファクタリング
             var lines = doc.content.Split('\n');
 
+            // m_Modification.m_Modifications[0].target.fileID
+            // 1つ目に格納されているのは元のGameObjectとの差異のはず
             for (var i = 0; i < lines.Length; i++)
             {
                 var line = lines[i];
