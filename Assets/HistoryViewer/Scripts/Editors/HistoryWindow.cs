@@ -54,21 +54,6 @@ namespace Negi0109.HistoryViewer.Editors
             commitsView = gameObjectHistory.Q("commits");
         }
 
-        // public void CreateGUI()
-        // {
-        //     // Import UXML
-        //     var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/HistoryViewer/Scripts/Editors/HistoryWindow.uxml");
-        //     VisualElement labelFromUXML = visualTree.Instantiate();
-        //     root.Add(labelFromUXML);
-
-        //     // A stylesheet can be added to a VisualElement.
-        //     // The style will be applied to the VisualElement and all of its children.
-        //     var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/HistoryViewer/Scripts/Editors/HistoryWindow.uss");
-        //     VisualElement labelWithStyle = new Label("Hello World! With Style");
-        //     labelWithStyle.styleSheets.Add(styleSheet);
-        //     root.Add(labelWithStyle);
-        // }
-
         private void InitScene()
         {
             try
