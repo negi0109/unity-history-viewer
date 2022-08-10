@@ -142,6 +142,8 @@ namespace Negi0109.HistoryViewer.Editors
 
                 label.text = diff.dest.name;
 
+                if (i % 2 != 0) child.AddToClassList("alternate");
+
                 if (diff.IsSame) child.AddToClassList("disabled");
                 else if (diff.Diff?.gameObject != null)
                 {

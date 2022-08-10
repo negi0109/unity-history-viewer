@@ -3,6 +3,10 @@ Label {
     color: white;
 }
 
+.commit.alternate {
+    background-color: var(--unity-colors-alternated_rows-background);
+}
+
 .commit.disabled Label {
     color: gray;
 }
