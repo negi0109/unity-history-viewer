@@ -13,6 +13,12 @@ namespace Negi0109.HistoryViewer.Editors
 {
     public class HistoryWindow : EditorWindow
     {
+        private string UXMLDirectory = "Assets/HistoryViewer/Scripts/Editors/UIElements/";
+        // UIElementsアセット類
+        private VisualTreeAsset rootAsset;
+        private VisualTreeAsset commitDiffAsset;
+
+
         private GameObject _target;
         private Scene _currentScene;
         private SceneGit _sceneGit;
@@ -25,6 +31,8 @@ namespace Negi0109.HistoryViewer.Editors
         private string _commitId = "";
 
         private VisualElement gameObjectHistory;
+        private VisualElement commitsView;
+
 
         [MenuItem("Histories/HistoryWindow")]
         public static void ShowExample()
@@ -36,12 +44,12 @@ namespace Negi0109.HistoryViewer.Editors
         public void OnEnable()
         {
             var root = this.rootVisualElement;
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/HistoryViewer/Scripts/Editors/HistoryWindow.uxml");
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/HistoryViewer/Scripts/Editors/HistoryWindow.uss");
+            rootAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "HistoryWindow.uxml");
+            commitDiffAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "CommitDiff.uxml");
 
-            visualTree.CloneTree(root);
-            root.styleSheets.Add(styleSheet);
+            rootAsset.CloneTree(root);
             gameObjectHistory = root.Q("object-element");
+            commitsView = gameObjectHistory.Q("commits");
         }
 
         // public void CreateGUI()
@@ -103,6 +111,37 @@ namespace Negi0109.HistoryViewer.Editors
             Repaint();
         }
 
+        private void SelectGameObject()
+        {
+            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
+            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
+
+            SerializedObject so = new(_target);
+            rootVisualElement.Bind(so);
+
+            diffs = new();
+
+            var targetId = GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId
+                                ^ GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId;
+
+            commitsView.Clear();
+
+            for (var i = 1; i < currentGit.commits.Count; i++)
+            {
+                var diff = new ObjectCommitDiff(targetId, currentGit.commits[i], currentGit.commits[i - 1]);
+                diffs.Add(diff);
+                if (diff.IsNotExist) continue;
+
+                VisualElement child = new();
+                commitDiffAsset.CloneTree(child);
+                var label = child.Q<Label>("commit_name");
+                label.text = diff.dest.name;
+
+                if (diff.IsSame) child.AddToClassList("disabled");
+                commitsView.Add(child);
+            }
+        }
+
 
         private void Update()
         {
@@ -127,8 +166,7 @@ namespace Negi0109.HistoryViewer.Editors
 
                 if (_target != null)
                 {
-                    SerializedObject so = new(_target);
-                    rootVisualElement.Bind(so);
+                    SelectGameObject();
                     gameObjectHistory.visible = true;
                 }
                 else
