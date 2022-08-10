@@ -138,7 +138,7 @@ namespace Negi0109.HistoryViewer.Editors
                 commitDiffAsset.CloneTree(child);
 
                 var label = child.Q<Label>("commit_name");
-                var stateButton = child.Q<Button>("state");
+                var stateLabel = child.Q<Label>("state");
 
                 label.text = diff.dest.name;
 
@@ -146,7 +146,7 @@ namespace Negi0109.HistoryViewer.Editors
                 else if (diff.Diff?.gameObject != null)
                 {
                     var state = diff.Diff.gameObject.state;
-                    stateButton.text = state switch
+                    stateLabel.text = state switch
                     {
                         GameObjectState.Add => "Create",
                         GameObjectState.Destroy => "Destroy",
@@ -155,22 +155,32 @@ namespace Negi0109.HistoryViewer.Editors
                         GameObjectState.PrefabToGameObject => "to GameObject",
                         _ => state.ToString()
                     };
-                    stateButton.AddToClassList(state.ToString());
+                    stateLabel.AddToClassList(state.ToString());
                 }
                 else
                 {
-                    stateButton.text = GameObjectState.Change.ToString();
-                    stateButton.AddToClassList(GameObjectState.Change.ToString());
+                    stateLabel.text = GameObjectState.Change.ToString();
+                    stateLabel.AddToClassList(GameObjectState.Change.ToString());
                 }
 
                 commitsView.Add(child);
             }
+            _logger.PrintLog("UnityHistoryViewer-log: SelectGameObject");
         }
 
 
         private void Update()
         {
             var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
+            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
+
+            if (currentGit == null)
+            {
+                if (isPrefabMode) InitPrefab();
+                else InitScene();
+
+                _target = null;
+            }
 
             if (isPrefabMode)
             {
@@ -186,7 +196,7 @@ namespace Negi0109.HistoryViewer.Editors
 
             if (_target != Selection.activeTransform?.gameObject)
             {
-                Debug.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
+                _logger.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
                 _target = Selection.activeTransform?.gameObject;
 
                 if (_target != null)

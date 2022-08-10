@@ -16,6 +16,7 @@ Label {
     flex-direction: row;
     margin: 2px 0;
     align-items: center;
+    padding-left: 5px;
 }
 
 #state {
@@ -23,7 +24,8 @@ Label {
     border-color: white;
     border-width: 2px;
     border-radius: 10px;
-    padding: 2px 2px;
+    padding: 2px 4px;
+    margin-right: 5px;
 }
 
 #state.Add {
