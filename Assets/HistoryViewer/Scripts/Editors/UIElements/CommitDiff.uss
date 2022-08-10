@@ -3,6 +3,45 @@ Label {
     color: white;
 }
 
-.disabled Label {
+.commit.disabled Label {
     color: gray;
+}
+
+.commit.disabled #state {
+    visibility: hidden;
+    display: none;
+}
+
+.commit {
+    flex-direction: row;
+    margin: 2px 0;
+    align-items: center;
+}
+
+#state {
+    -unity-font-style: bold;
+    border-color: white;
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 2px 2px;
+}
+
+#state.Add {
+    background-color: #006;
+}
+
+#state.Destroy {
+    background-color: #600;
+}
+
+#state.Change {
+    background-color: #660;
+}
+
+#state.GameObjectToPrefab {
+    background-color: #666;
+}
+
+#state.PrefabToGameObject {
+    background-color: #666;
 }

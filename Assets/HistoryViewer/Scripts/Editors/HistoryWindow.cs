@@ -11,6 +11,8 @@ using UnityEngine.UIElements;
 
 namespace Negi0109.HistoryViewer.Editors
 {
+    using GameObjectState = ObjectCommitDiff.CommitDiff.GameObjectState;
+
     public class HistoryWindow : EditorWindow
     {
         private string UXMLDirectory = "Assets/HistoryViewer/Scripts/Editors/UIElements/";
@@ -134,10 +136,33 @@ namespace Negi0109.HistoryViewer.Editors
 
                 VisualElement child = new();
                 commitDiffAsset.CloneTree(child);
+
                 var label = child.Q<Label>("commit_name");
+                var stateButton = child.Q<Button>("state");
+
                 label.text = diff.dest.name;
 
                 if (diff.IsSame) child.AddToClassList("disabled");
+                else if (diff.Diff?.gameObject != null)
+                {
+                    var state = diff.Diff.gameObject.state;
+                    stateButton.text = state switch
+                    {
+                        GameObjectState.Add => "Create",
+                        GameObjectState.Destroy => "Destroy",
+                        GameObjectState.Change => "Change",
+                        GameObjectState.GameObjectToPrefab => "to Prefab",
+                        GameObjectState.PrefabToGameObject => "to GameObject",
+                        _ => state.ToString()
+                    };
+                    stateButton.AddToClassList(state.ToString());
+                }
+                else
+                {
+                    stateButton.text = GameObjectState.Change.ToString();
+                    stateButton.AddToClassList(GameObjectState.Change.ToString());
+                }
+
                 commitsView.Add(child);
             }
         }
