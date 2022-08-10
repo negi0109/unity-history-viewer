@@ -11,14 +11,12 @@ using UnityEngine.UIElements;
 
 namespace Negi0109.HistoryViewer.Editors
 {
-    using GameObjectState = ObjectCommitDiff.CommitDiff.GameObjectState;
-
     public class HistoryWindow : EditorWindow
     {
         private string UXMLDirectory = "Assets/HistoryViewer/Scripts/Editors/UIElements/";
         // UIElementsアセット類
         private VisualTreeAsset rootAsset;
-        private VisualTreeAsset commitDiffAsset;
+        private CommitDiffViewFactory _commitDiffFactory;
 
 
         private GameObject _target;
@@ -47,7 +45,7 @@ namespace Negi0109.HistoryViewer.Editors
         {
             var root = this.rootVisualElement;
             rootAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "HistoryWindow.uxml");
-            commitDiffAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "CommitDiff.uxml");
+            _commitDiffFactory = new(AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "CommitDiff.uxml"));
 
             rootAsset.CloneTree(root);
             gameObjectHistory = root.Q("object-element");
@@ -117,38 +115,11 @@ namespace Negi0109.HistoryViewer.Editors
             {
                 var diff = new ObjectCommitDiff(targetId, currentGit.commits[i], currentGit.commits[i - 1]);
                 diffs.Add(diff);
+
                 if (diff.IsNotExist) continue;
 
-                VisualElement child = new();
-                commitDiffAsset.CloneTree(child);
-
-                var label = child.Q<Label>("commit_name");
-                var stateLabel = child.Q<Label>("state");
-
-                label.text = diff.dest.name;
-
+                var child = _commitDiffFactory.Build(diff);
                 if (i % 2 != 0) child.AddToClassList("alternate");
-
-                if (diff.IsSame) child.AddToClassList("disabled");
-                else if (diff.Diff?.gameObject != null)
-                {
-                    var state = diff.Diff.gameObject.state;
-                    stateLabel.text = state switch
-                    {
-                        GameObjectState.Add => "Create",
-                        GameObjectState.Destroy => "Destroy",
-                        GameObjectState.Change => "Change",
-                        GameObjectState.GameObjectToPrefab => "to Prefab",
-                        GameObjectState.PrefabToGameObject => "to GameObject",
-                        _ => state.ToString()
-                    };
-                    stateLabel.AddToClassList(state.ToString());
-                }
-                else
-                {
-                    stateLabel.text = GameObjectState.Change.ToString();
-                    stateLabel.AddToClassList(GameObjectState.Change.ToString());
-                }
 
                 commitsView.Add(child);
             }
