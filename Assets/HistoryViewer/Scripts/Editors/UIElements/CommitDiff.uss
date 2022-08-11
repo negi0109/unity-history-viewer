@@ -6,6 +6,11 @@
 .commit #components {
     flex-direction: row;
     gap: 10px;
+    margin-bottom: 5px;
+}
+
+.commit #components.disabled {
+    margin-bottom: 0px;
 }
 
 .commit.alternate {
