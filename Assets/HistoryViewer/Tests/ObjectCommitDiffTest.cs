@@ -388,7 +388,7 @@ GameObject:
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_LocalRotation: {x: 0, y: 5, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 0}
   m_GameObject: {fileID: 1823714741}",
                 null, TestName = "Same"
         )]
