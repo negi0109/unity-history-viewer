@@ -73,8 +73,24 @@ namespace Negi0109.HistoryViewer.Models
                 _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.PrefabToGameObject };
             else if (srcObject.IsGameObject && destObject.Stripped)
                 _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.GameObjectToPrefab };
-            else if (srcObject != null && destObject != null)
+            else if (srcObject.Stripped && destObject.Stripped)
             {
+                // TODO prefabの比較
+                if (srcObject.IsVirtual ^ destObject.Stripped)
+                {
+                    _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.Change };
+                }
+                else if (srcObject.IsVirtual)
+                { }
+                else
+                {
+                    if (srcObject.document != destObject.document)
+                        _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.Change };
+                }
+            }
+            else if (srcObject.IsGameObject && destObject.IsGameObject)
+            {
+                // TODO コンポーネントの比較
                 if (srcObject.document != destObject.document)
                 {
                     _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.Change };

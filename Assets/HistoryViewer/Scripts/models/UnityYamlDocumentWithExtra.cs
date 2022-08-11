@@ -23,6 +23,7 @@ namespace Negi0109.HistoryViewer.Models
         public bool IsGameObject { get => !IsVirtual && document.IsGameObject; }
         public bool Stripped { get => IsVirtual || document.Stripped; }
         public bool IsVirtual { get => document == null; }
+        public ComponentType componentType { get => IsVirtual ? ComponentType.StrippedGameObject : document.componentType; }
 
         public UnityYamlDocumentWithExtra(UnityYamlDocument document)
         {
@@ -52,18 +53,26 @@ namespace Negi0109.HistoryViewer.Models
 
             var another = (UnityYamlDocumentWithExtra)obj;
 
+            if (another.componentType != componentType) return false;
             if (document != another.document) return false;
 
-            foreach (var sameKey in Enumerable.Intersect(components.Keys, another.components.Keys))
+            if (Stripped)
             {
-                if (!components[sameKey].Equals(another.components[sameKey]))
-                {
-                    return false;
-                }
-            }
 
-            if (another.components.Keys.Except(components.Keys).Any()) return false;
-            if (components.Keys.Except(another.components.Keys).Any()) return false;
+            }
+            else if (IsGameObject)
+            {
+                foreach (var sameKey in Enumerable.Intersect(components.Keys, another.components.Keys))
+                {
+                    if (!components[sameKey].Equals(another.components[sameKey]))
+                    {
+                        return false;
+                    }
+                }
+
+                if (another.components.Keys.Except(components.Keys).Any()) return false;
+                if (components.Keys.Except(another.components.Keys).Any()) return false;
+            }
 
             return true;
         }
