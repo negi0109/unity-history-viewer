@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Negi0109.HistoryViewer.Models
 {
     public class ObjectCommitDiff
@@ -13,12 +15,25 @@ namespace Negi0109.HistoryViewer.Models
                 PrefabToGameObject,
             }
 
+            public enum ComponentState
+            {
+                Add,
+                Destroy,
+                Change
+            }
+
             public class GameObject
             {
                 public GameObjectState state;
             }
 
+            public class Component
+            {
+                public ComponentState state;
+            }
+
             public GameObject gameObject;
+            public List<Component> components = new();
         }
 
         public CommitDiff Diff
