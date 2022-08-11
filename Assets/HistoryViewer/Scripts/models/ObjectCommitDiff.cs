@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Negi0109.HistoryViewer.Models
 {
@@ -29,7 +30,16 @@ namespace Negi0109.HistoryViewer.Models
 
             public class Component
             {
-                public ComponentState state;
+                public readonly ComponentState state;
+                public readonly UnityYamlDocument src;
+                public readonly UnityYamlDocument dest;
+
+                public Component(ComponentState state, UnityYamlDocument src, UnityYamlDocument dest)
+                {
+                    this.state = state;
+                    this.src = src;
+                    this.dest = dest;
+                }
             }
 
             public GameObject gameObject;
@@ -105,7 +115,25 @@ namespace Negi0109.HistoryViewer.Models
             }
             else if (srcObject.IsGameObject && destObject.IsGameObject)
             {
-                // TODO コンポーネントの比較
+                var srcComponents = srcObject.components;
+                var destComponents = destObject.components;
+                foreach (var sameKey in Enumerable.Intersect(srcObject.components.Keys, destObject.components.Keys))
+                {
+                    if (!srcObject.components[sameKey].Equals(destObject.components[sameKey]))
+                    {
+                        _commitDiff.components.Add(new CommitDiff.Component(CommitDiff.ComponentState.Change, srcObject.components[sameKey], destComponents[sameKey]));
+                    }
+                }
+
+                foreach (var addKey in destObject.components.Keys.Except(srcObject.components.Keys))
+                {
+                    _commitDiff.components.Add(new CommitDiff.Component(CommitDiff.ComponentState.Add, null, destComponents[addKey]));
+                }
+                foreach (var destroyKey in srcObject.components.Keys.Except(destObject.components.Keys))
+                {
+                    _commitDiff.components.Add(new CommitDiff.Component(CommitDiff.ComponentState.Destroy, srcComponents[destroyKey], null));
+                }
+
                 if (srcObject.document != destObject.document)
                 {
                     _commitDiff.gameObject = new CommitDiff.GameObject() { state = CommitDiff.GameObjectState.Change };
