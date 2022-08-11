@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UXML xmlns:ui="UnityEngine.UIElements" class="commit">
     <Style src="CommitDiff.uss" />
-    <ui:Label name="state" text="" />
-    <ui:Label name="commit_name" text=""/>
+    <ui:VisualElement name="commit_info" class="commit_info">
+        <ui:Label name="state" text="" />
+        <ui:Label name="commit_name" text=""/>
+    </ui:VisualElement>
+    <ui:VisualElement name="components" />
 </UXML>

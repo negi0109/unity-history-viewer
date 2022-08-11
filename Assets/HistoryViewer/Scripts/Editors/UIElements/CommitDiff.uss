@@ -1,6 +1,11 @@
-Label {
+.commit Label {
     font-size: 16px;
     color: white;
+}
+
+.commit #components {
+    flex-direction: row;
+    gap: 10px;
 }
 
 .commit.alternate {
@@ -16,14 +21,14 @@ Label {
     display: none;
 }
 
-.commit {
+.commit_info {
     flex-direction: row;
     margin: 2px 0;
     align-items: center;
     padding-left: 5px;
 }
 
-#state {
+.commit_info>#state {
     -unity-font-style: bold;
     border-color: white;
     border-width: 2px;
@@ -32,22 +37,22 @@ Label {
     margin-right: 5px;
 }
 
-#state.Add {
+.commit_info>#state.Add {
     background-color: #006;
 }
 
-#state.Destroy {
+.commit_info>#state.Destroy {
     background-color: #600;
 }
 
-#state.Change {
+.commit_info>#state.Change {
     background-color: #660;
 }
 
-#state.GameObjectToPrefab {
+.commit_info>#state.GameObjectToPrefab {
     background-color: #666;
 }
 
-#state.PrefabToGameObject {
+.commit_info>#state.PrefabToGameObject {
     background-color: #666;
 }

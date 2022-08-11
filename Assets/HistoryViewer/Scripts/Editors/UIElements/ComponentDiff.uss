@@ -1,0 +1,31 @@
+.component {
+    flex-direction: row;
+    margin-left: 4px;
+
+    border-width: 1px;
+    border-radius: 3px;
+}
+
+
+.component Label {
+    font-size: 14px;
+    padding:0;
+}
+
+.component #state {
+    -unity-font-style: bold;
+    font-size: 12px;
+}
+
+.component.Add {
+    background-color: #006;
+}
+
+.component.Destroy {
+    background-color: #600;
+}
+
+
+.component.Change {
+    background-color: #660;
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML xmlns:ui="UnityEngine.UIElements" class="component">
+    <Style src="ComponentDiff.uss" />
+    <ui:Label name="state" text="" />
+    <ui:Label name="name" text=""/>
+</UXML>

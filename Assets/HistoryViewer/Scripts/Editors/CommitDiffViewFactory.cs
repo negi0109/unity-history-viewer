@@ -14,10 +14,12 @@ namespace Negi0109.HistoryViewer.Editors
     public class CommitDiffViewFactory
     {
         private VisualTreeAsset _asset;
+        public CommitComponentDiffViewFactory _componentDiffViewFactory;
 
-        public CommitDiffViewFactory(VisualTreeAsset asset)
+        public CommitDiffViewFactory(VisualTreeAsset asset, CommitComponentDiffViewFactory componentDiffViewFactory)
         {
             _asset = asset;
+            _componentDiffViewFactory = componentDiffViewFactory;
         }
 
         public VisualElement Build(ObjectCommitDiff diff)
@@ -50,6 +52,19 @@ namespace Negi0109.HistoryViewer.Editors
             {
                 stateLabel.text = GameObjectState.Change.ToString();
                 stateLabel.AddToClassList(GameObjectState.Change.ToString());
+            }
+
+            var components = child.Q("components");
+            if (diff.Diff.components.Any())
+            {
+                foreach (var component in diff.Diff.components)
+                {
+                    components.Add(_componentDiffViewFactory.Build(component));
+                }
+            }
+            else
+            {
+                components.AddToClassList("disabled");
             }
 
             return child;

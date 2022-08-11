@@ -18,7 +18,6 @@ namespace Negi0109.HistoryViewer.Editors
         private VisualTreeAsset rootAsset;
         private CommitDiffViewFactory _commitDiffFactory;
 
-
         private GameObject _target;
         private Scene _currentScene;
         private SceneGit _sceneGit;
@@ -45,7 +44,10 @@ namespace Negi0109.HistoryViewer.Editors
         {
             var root = this.rootVisualElement;
             rootAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "HistoryWindow.uxml");
-            _commitDiffFactory = new(AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "CommitDiff.uxml"));
+            _commitDiffFactory = new(
+                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "CommitDiff.uxml"),
+                new(AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "ComponentDiff.uxml"))
+            );
 
             rootAsset.CloneTree(root);
             gameObjectHistory = root.Q("object-element");
