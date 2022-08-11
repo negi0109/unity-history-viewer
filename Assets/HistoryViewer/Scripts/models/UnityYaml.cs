@@ -67,7 +67,9 @@ namespace Negi0109.HistoryViewer.Models
             }
             foreach (var tmp in tmpGameObjectDocuments)
             {
-                gameObjectDocuments.Add(tmp.Key, tmp.Value);
+                // StrippedGameObjectがない場合のみ仮想のものを登録
+                if (!gameObjectDocuments.ContainsKey(tmp.Key))
+                    gameObjectDocuments.Add(tmp.Key, tmp.Value);
             }
 
 
