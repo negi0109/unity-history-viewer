@@ -34,14 +34,13 @@ namespace Negi0109.HistoryViewer.Editors
             label.text = diff.dest.name;
 
             if (diff.IsSame) child.AddToClassList("disabled");
-            else if (diff.Diff?.gameObject != null)
+            else if (diff.Diff?.gameObject != null && diff.Diff.gameObject.state != GameObjectState.Change)
             {
                 var state = diff.Diff.gameObject.state;
                 stateLabel.text = state switch
                 {
                     GameObjectState.Add => "Create",
                     GameObjectState.Destroy => "Destroy",
-                    GameObjectState.Change => "Change",
                     GameObjectState.GameObjectToPrefab => "to Prefab",
                     GameObjectState.PrefabToGameObject => "to GameObject",
                     _ => state.ToString()
@@ -50,8 +49,7 @@ namespace Negi0109.HistoryViewer.Editors
             }
             else
             {
-                stateLabel.text = GameObjectState.Change.ToString();
-                stateLabel.AddToClassList(GameObjectState.Change.ToString());
+                stateLabel.AddToClassList("disabled");
             }
 
             var components = child.Q("components");
