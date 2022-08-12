@@ -1,0 +1,12 @@
+{
+  "name": "com.negi0109.history-viewer",
+  "version": "0.0.1",
+  "displayName": "HistoryViewer",
+  "unity": "2021.3",
+  "description": "GameObject log (git)",
+  "license": "MIT",
+  "author": {
+    "name": "negi0109",
+    "url": "https://github.com/negi0109"
+  }
+}
