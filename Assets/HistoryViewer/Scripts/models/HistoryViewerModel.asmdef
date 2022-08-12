@@ -1,5 +1,5 @@
 {
-    "name": "HistoryViewerModel",
+    "name": "negi0109.HistoryViewer.HistoryViewerModel",
     "rootNamespace": "",
     "references": [
         "GUID:b7c90106e220c4a7abd31d53231e3469"

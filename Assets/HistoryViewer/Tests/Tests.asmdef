@@ -1,9 +1,9 @@
 {
-    "name": "Tests",
+    "name": "negi0109.HistoryViewer.Tests",
     "rootNamespace": "",
     "references": [
-        "HistoryViewerModel",
-        "HistoryViewerInterface"
+        "negi0109.HistoryViewer.HistoryViewerModel",
+        "negi0109.HistoryViewer.HistoryViewerInterface"
     ],
     "includePlatforms": [
         "Editor"
