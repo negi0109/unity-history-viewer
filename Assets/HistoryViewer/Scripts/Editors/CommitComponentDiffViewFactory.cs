@@ -1,10 +1,4 @@
-using UnityEditor;
-using UnityEngine;
-using System.Linq;
 using Negi0109.HistoryViewer.Models;
-using Negi0109.HistoryViewer.Middleware;
-using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace Negi0109.HistoryViewer.Editors

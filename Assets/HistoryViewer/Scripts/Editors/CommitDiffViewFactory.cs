@@ -2,9 +2,6 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 using Negi0109.HistoryViewer.Models;
-using Negi0109.HistoryViewer.Middleware;
-using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace Negi0109.HistoryViewer.Editors
@@ -14,7 +11,7 @@ namespace Negi0109.HistoryViewer.Editors
     public class CommitDiffViewFactory
     {
         private VisualTreeAsset _asset;
-        public CommitComponentDiffViewFactory _componentDiffViewFactory;
+        private CommitComponentDiffViewFactory _componentDiffViewFactory;
 
         public CommitDiffViewFactory(VisualTreeAsset asset, CommitComponentDiffViewFactory componentDiffViewFactory)
         {

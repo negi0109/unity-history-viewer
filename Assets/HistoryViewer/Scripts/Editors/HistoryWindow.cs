@@ -13,9 +13,10 @@ namespace Negi0109.HistoryViewer.Editors
 {
     public class HistoryWindow : EditorWindow
     {
-        private string UXMLDirectory = "Assets/HistoryViewer/Scripts/Editors/UIElements/";
         // UIElementsアセット類
-        private VisualTreeAsset rootAsset;
+        public VisualTreeAsset rootAsset;
+        public VisualTreeAsset commitDiffAsset;
+        public VisualTreeAsset componentDiffAsset;
         private CommitDiffViewFactory _commitDiffFactory;
 
         private GameObject _target;
@@ -42,11 +43,10 @@ namespace Negi0109.HistoryViewer.Editors
 
         public void OnEnable()
         {
-            var root = this.rootVisualElement;
-            rootAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "HistoryWindow.uxml");
+            var root = rootVisualElement;
             _commitDiffFactory = new(
-                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "CommitDiff.uxml"),
-                new(AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXMLDirectory + "ComponentDiff.uxml"))
+                commitDiffAsset,
+                new CommitComponentDiffViewFactory(componentDiffAsset)
             );
 
             rootAsset.CloneTree(root);
@@ -156,7 +156,7 @@ namespace Negi0109.HistoryViewer.Editors
 
             if (_target != Selection.activeTransform?.gameObject)
             {
-                _logger.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
+                // _logger.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
                 _target = Selection.activeTransform?.gameObject;
 
                 if (_target != null)
