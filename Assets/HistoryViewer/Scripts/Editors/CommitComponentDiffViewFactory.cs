@@ -1,4 +1,7 @@
+using System.IO;
 using Negi0109.HistoryViewer.Models;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Negi0109.HistoryViewer.Editors
@@ -31,13 +34,25 @@ namespace Negi0109.HistoryViewer.Editors
             };
 
             var label = child.Q<Label>("name");
-            label.text = component.state switch
+            var anyObject = component.state switch
             {
-                ComponentState.Add => component.dest.AnyObject.name,
-                ComponentState.Destroy => component.src.AnyObject.name,
-                ComponentState.Change => component.src.AnyObject.name,
-                _ => component.src.AnyObject.name
+                ComponentState.Add => component.dest.AnyObject,
+                ComponentState.Destroy => component.src.AnyObject,
+                ComponentState.Change => component.src.AnyObject,
+                _ => component.src.AnyObject
             };
+
+            string anyObjectName = null;
+            if (anyObject.guid != null)
+            {
+                var file = AssetDatabase.GUIDToAssetPath(anyObject.guid);
+                if (!string.IsNullOrEmpty(file))
+                {
+                    anyObjectName = Path.GetFileNameWithoutExtension(file);
+                }
+            }
+            anyObjectName ??= anyObject.name;
+            label.text = anyObjectName;
 
             return child;
         }
