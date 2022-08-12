@@ -16,9 +16,9 @@ namespace Negi0109.HistoryViewer.Models
         public bool IsAnyObject { get => !IsHeader && !IsGameObject; }
         public bool IsGameObject
         {
-            get => _type == 1;
+            get => type == 1;
         }
-        public bool IsPrefab { get => _type == 1001; }
+        public bool IsPrefab { get => type == 1001; }
 
         public GameObjectYaml GameObject
         {
@@ -78,7 +78,7 @@ namespace Negi0109.HistoryViewer.Models
         public readonly string content;
         public readonly ComponentType componentType;
 
-        private readonly int _type;
+        public readonly int type;
         private readonly ulong _fileId;
         private readonly bool _stripped;
 
@@ -101,7 +101,7 @@ namespace Negi0109.HistoryViewer.Models
 
                 if (int.TryParse(attribute0[2], out int type))
                 {
-                    _type = type;
+                    this.type = type;
                 }
                 else
                 {
