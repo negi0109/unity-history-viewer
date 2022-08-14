@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="object-element" >
+        <Style src="HistoryWindow.uss" />
+        <ui:Label name="GameObjectName" label="Name" text="" binding-path="m_Name"/>
+        <ui:VisualElement name="commits" />
+    </ui:VisualElement>
+</UXML>

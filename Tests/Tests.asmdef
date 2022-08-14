@@ -1,0 +1,23 @@
+{
+    "name": "negi0109.HistoryViewer.Tests",
+    "rootNamespace": "",
+    "references": [
+        "negi0109.HistoryViewer.HistoryViewerModel",
+        "negi0109.HistoryViewer.HistoryViewerInterface"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

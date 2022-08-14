@@ -1,0 +1,68 @@
+.commit Label {
+    font-size: 16px;
+    color: white;
+}
+
+.commit #components {
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.commit #components.disabled {
+    margin-bottom: 0px;
+}
+
+.commit.alternate {
+    background-color: var(--unity-colors-alternated_rows-background);
+}
+
+.commit.disabled Label {
+    color: gray;
+}
+
+.commit.disabled #state {
+    visibility: hidden;
+    display: none;
+}
+
+.commit_info {
+    flex-direction: row;
+    margin: 2px 0;
+    align-items: center;
+    padding-left: 5px;
+}
+
+.commit_info>#state {
+    -unity-font-style: bold;
+    border-color: white;
+    border-width: 1px;
+    border-radius: 10px;
+    padding: 2px 4px;
+    margin-right: 5px;
+    font-size: 10px;
+}
+
+.commit_info>#state.disabled {
+    display: none;
+}
+
+.commit_info>#state.Add {
+    background-color: #006;
+}
+
+.commit_info>#state.Destroy {
+    background-color: #600;
+}
+
+.commit_info>#state.Change {
+    background-color: #660;
+}
+
+.commit_info>#state.GameObjectToPrefab {
+    background-color: #666;
+}
+
+.commit_info>#state.PrefabToGameObject {
+    background-color: #666;
+}
