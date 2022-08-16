@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<UXML xmlns:ui="UnityEngine.UIElements">
+<UXML
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:ue="UnityEditor.UIElements"
+>
     <ui:VisualElement name="object-element" >
         <Style src="HistoryWindow.uss" />
+        <ue:Toolbar name="toolbar">
+            <ui:Button name="toolbar-showlog">
+                <ui:Image />
+                <ui:Label text="logs"/>
+            </ui:Button>
+        </ue:Toolbar>
         <ui:Label name="GameObjectName" label="Name" text="" binding-path="m_Name"/>
         <ui:VisualElement name="commits" />
     </ui:VisualElement>
