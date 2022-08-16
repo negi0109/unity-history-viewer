@@ -33,6 +33,7 @@ namespace Negi0109.HistoryViewer.Editors
         private VisualElement gameObjectHistory;
         private VisualElement commitsView;
 
+        private bool isShowLogs = false;
 
         [MenuItem("Histories/HistoryWindow")]
         public static void ShowExample()
@@ -52,6 +53,24 @@ namespace Negi0109.HistoryViewer.Editors
             rootAsset.CloneTree(root);
             gameObjectHistory = root.Q("object-element");
             commitsView = gameObjectHistory.Q("commits");
+            root.Q("toolbar-showlog").RegisterCallback<ClickEvent>(ClickToolbarShowLogButton);
+
+            UpdateShowLogButton();
+        }
+
+        private void ClickToolbarShowLogButton(ClickEvent e)
+        {
+            isShowLogs = !isShowLogs;
+            UpdateShowLogButton();
+            SelectGameObject();
+        }
+
+        private void UpdateShowLogButton()
+        {
+            var img = rootVisualElement.Q("toolbar-showlog").Q<Image>();
+            img.image = EditorGUIUtility.IconContent(
+                isShowLogs ? "d_VisibilityOn" : "d_VisibilityOff"
+            ).image;
         }
 
         private void InitScene()
@@ -118,7 +137,7 @@ namespace Negi0109.HistoryViewer.Editors
                 var diff = new ObjectCommitDiff(targetId, currentGit.commits[i], currentGit.commits[i - 1]);
                 diffs.Add(diff);
 
-                if (diff.IsNotExist) continue;
+                if (i != 1 && diff.IsSame && !isShowLogs) continue;
 
                 var child = _commitDiffFactory.Build(diff);
                 if (i % 2 != 0) child.AddToClassList("alternate");
