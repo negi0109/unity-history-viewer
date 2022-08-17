@@ -12,6 +12,6 @@
             </ui:Button>
         </ue:Toolbar>
         <ui:Label name="GameObjectName" label="Name" text="" binding-path="m_Name"/>
-        <ui:VisualElement name="commits" />
+        <ui:ScrollView name="commits" />
     </ui:VisualElement>
 </UXML>
