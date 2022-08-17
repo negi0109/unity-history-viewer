@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UXML xmlns:ui="UnityEngine.UIElements" class="commit">
+    <Style src="SceneCommit.uss" />
+
+    <ui:VisualElement name="commit_info" class="commit_info">
+        <ui:Label name="commit_name" text=""/>
+    </ui:VisualElement>
+</UXML>

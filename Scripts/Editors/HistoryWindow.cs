@@ -16,8 +16,10 @@ namespace Negi0109.HistoryViewer.Editors
         // UIElementsアセット類
         public VisualTreeAsset rootAsset;
         public VisualTreeAsset commitDiffAsset;
+        public VisualTreeAsset sceneCommitAsset;
         public VisualTreeAsset componentDiffAsset;
         private CommitDiffViewFactory _commitDiffFactory;
+        private SceneCommitViewFactory _sceneCommitFactory;
 
         private GameObject _target;
         private Scene _currentScene;
@@ -31,7 +33,7 @@ namespace Negi0109.HistoryViewer.Editors
         private string _commitId = "";
 
         private VisualElement gameObjectHistory;
-        private VisualElement commitsView;
+        private VisualElement sceneHistory;
 
         private bool isShowLogs = false;
 
@@ -49,10 +51,11 @@ namespace Negi0109.HistoryViewer.Editors
                 commitDiffAsset,
                 new CommitComponentDiffViewFactory(componentDiffAsset)
             );
+            _sceneCommitFactory = new(sceneCommitAsset);
 
             rootAsset.CloneTree(root);
-            gameObjectHistory = root.Q("object-element");
-            commitsView = gameObjectHistory.Q("commits");
+            gameObjectHistory = root.Q("gameObject-logs");
+            sceneHistory = root.Q("scene-logs");
             root.Q("toolbar-showlog").RegisterCallback<ClickEvent>(ClickToolbarShowLogButton);
 
             UpdateShowLogButton();
@@ -117,8 +120,46 @@ namespace Negi0109.HistoryViewer.Editors
             Repaint();
         }
 
+        private void DisplaySceneLog()
+        {
+            gameObjectHistory.SetEnabled(false);
+            sceneHistory.SetEnabled(true);
+
+            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
+            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
+
+            if (currentGit == null)
+            {
+                if (isPrefabMode) InitPrefab();
+                else InitScene();
+
+                _target = null;
+            }
+
+            sceneHistory.Q<Label>("SceneName").text = isPrefabMode ?
+                PrefabStageUtility.GetCurrentPrefabStage().prefabContentsRoot.name :
+                SceneManager.GetActiveScene().name;
+
+            var commitsView = sceneHistory.Q("commits");
+            commitsView.Clear();
+
+            for (var i = 0; i < currentGit.commits.Count; i++)
+            {
+                var commit = currentGit.commits[i];
+
+                var child = _sceneCommitFactory.Build(commit);
+                if (i % 2 == 0) child.AddToClassList("alternate");
+
+                commitsView.Add(child);
+            }
+            _logger.PrintLog("UnityHistoryViewer-log: DisplayScene");
+        }
+
         private void SelectGameObject()
         {
+            gameObjectHistory.SetEnabled(true);
+            sceneHistory.SetEnabled(false);
+
             var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
             var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
 
@@ -129,7 +170,7 @@ namespace Negi0109.HistoryViewer.Editors
 
             var targetId = GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId
                                 ^ GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId;
-
+            var commitsView = gameObjectHistory.Q("commits");
             commitsView.Clear();
 
             for (var i = 1; i < currentGit.commits.Count; i++)
@@ -181,11 +222,10 @@ namespace Negi0109.HistoryViewer.Editors
                 if (_target != null)
                 {
                     SelectGameObject();
-                    gameObjectHistory.visible = true;
                 }
                 else
                 {
-                    gameObjectHistory.visible = false;
+                    DisplaySceneLog();
                 }
             }
 
