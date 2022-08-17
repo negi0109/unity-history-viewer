@@ -3,8 +3,8 @@
     xmlns:ui="UnityEngine.UIElements"
     xmlns:ue="UnityEditor.UIElements"
 >
-    <ui:VisualElement name="object-element" >
-        <Style src="HistoryWindow.uss" />
+    <Style src="HistoryWindow.uss" />
+    <ui:VisualElement name="gameObject-logs" >
         <ue:Toolbar name="toolbar">
             <ui:Button name="toolbar-showlog">
                 <ui:Image />
@@ -12,6 +12,10 @@
             </ui:Button>
         </ue:Toolbar>
         <ui:Label name="GameObjectName" label="Name" text="" binding-path="m_Name"/>
+        <ui:ScrollView name="commits" />
+    </ui:VisualElement>
+    <ui:VisualElement name="scene-logs" >
+        <ui:Label name="SceneName" label="Name" text=""/>
         <ui:ScrollView name="commits" />
     </ui:VisualElement>
 </UXML>

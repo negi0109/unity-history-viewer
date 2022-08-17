@@ -1,0 +1,8 @@
+.commit.alternate {
+    background-color: var(--unity-colors-alternated_rows-background);
+}
+
+.commit .commit_info Label {
+    font-size: 16px;
+    color: white;
+}

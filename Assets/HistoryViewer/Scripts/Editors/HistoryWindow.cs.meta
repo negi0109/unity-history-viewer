@@ -7,6 +7,7 @@ MonoImporter:
   - m_ViewDataDictionary: {instanceID: 0}
   - rootAsset: {fileID: 9197481963319205126, guid: e28906240e46e4476abe0bdd90601e1b, type: 3}
   - commitDiffAsset: {fileID: 9197481963319205126, guid: 05a0837c59b3b4ae684036ba79f98713, type: 3}
+  - sceneCommitAsset: {fileID: 9197481963319205126, guid: 0ea79dff3a93244aa9a0cdd48715a9c9, type: 3}
   - componentDiffAsset: {fileID: 9197481963319205126, guid: 6ca5ba439b5814a038c8bd1e60a7b059, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
