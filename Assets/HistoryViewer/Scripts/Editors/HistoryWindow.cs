@@ -34,6 +34,7 @@ namespace Negi0109.HistoryViewer.Editors
 
         private VisualElement gameObjectHistory;
         private VisualElement sceneHistory;
+        private VisualElement dirtyFlagElement;
 
         private bool isShowLogs = false;
 
@@ -55,6 +56,7 @@ namespace Negi0109.HistoryViewer.Editors
 
             rootAsset.CloneTree(root);
             gameObjectHistory = root.Q("gameObject-logs");
+            dirtyFlagElement = gameObjectHistory.Q("GameObjectDirty");
             sceneHistory = root.Q("scene-logs");
             root.Q("toolbar-showlog").RegisterCallback<ClickEvent>(ClickToolbarShowLogButton);
 
@@ -188,6 +190,15 @@ namespace Negi0109.HistoryViewer.Editors
             _logger.PrintLog("UnityHistoryViewer-log: SelectGameObject");
         }
 
+        private bool IsDirty()
+        {
+
+            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
+
+            return isPrefabMode ?
+                PrefabStageUtility.GetCurrentPrefabStage().scene.isDirty :
+                SceneManager.GetActiveScene().isDirty;
+        }
 
         private void Update()
         {
@@ -229,6 +240,7 @@ namespace Negi0109.HistoryViewer.Editors
                 }
             }
 
+            dirtyFlagElement.SetEnabled(IsDirty());
         }
     }
 }

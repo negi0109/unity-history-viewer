@@ -1,6 +1,6 @@
 {
   "name": "com.negi0109.history-viewer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "HistoryViewer",
   "unity": "2021.3",
   "description": "GameObject log (git)",
