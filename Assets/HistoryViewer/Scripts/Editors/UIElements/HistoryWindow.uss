@@ -1,4 +1,4 @@
-#GameObjectName, #SceneName {
+#GameObjectName, #SceneName, #GameObjectDirty {
     font-size: 20px;
     -unity-font-style: bold;
     color: rgb(68, 138, 255);
@@ -10,4 +10,12 @@
 
 #toolbar-showlog{
     flex-direction: row;
+}
+
+#header {
+    flex-direction: row;
+}
+
+#GameObjectDirty:disabled {
+    display: none;
 }
