@@ -4,14 +4,17 @@
     xmlns:ue="UnityEditor.UIElements"
 >
     <Style src="HistoryWindow.uss" />
-    <ui:VisualElement name="gameObject-logs" >
+    <ui:VisualElement name="gameObject-logs">
         <ue:Toolbar name="toolbar">
             <ui:Button name="toolbar-showlog">
                 <ui:Image />
                 <ui:Label text="logs"/>
             </ui:Button>
         </ue:Toolbar>
-        <ui:Label name="GameObjectName" label="Name" text="" binding-path="m_Name"/>
+        <ui:VisualElement name="header">
+            <ui:Label name="GameObjectName" text="" binding-path="m_Name" />
+            <ui:Label name="GameObjectDirty" text="*" />
+        </ui:VisualElement>
         <ui:ScrollView name="commits" />
     </ui:VisualElement>
     <ui:VisualElement name="scene-logs" >
