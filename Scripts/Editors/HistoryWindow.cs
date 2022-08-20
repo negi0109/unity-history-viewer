@@ -30,7 +30,6 @@ namespace Negi0109.HistoryViewer.Editors
         private BufferedLogger _logger;
 
         private List<ObjectCommitDiff> diffs;
-        private string _commitId = "";
 
         private VisualElement gameObjectHistory;
         private VisualElement sceneHistory;
@@ -39,7 +38,7 @@ namespace Negi0109.HistoryViewer.Editors
         private bool isShowLogs = false;
 
         [MenuItem("Histories/HistoryWindow")]
-        public static void ShowExample()
+        public static void ShowWindow()
         {
             HistoryWindow wnd = GetWindow<HistoryWindow>();
             wnd.titleContent = new GUIContent("HistoryWindow");
@@ -63,7 +62,31 @@ namespace Negi0109.HistoryViewer.Editors
             sceneHistory = root.Q("scene-logs");
             root.Q("toolbar-showlog").RegisterCallback<ClickEvent>(ClickToolbarShowLogButton);
 
-            UpdateShowLogButton();
+            _logger ??= new BufferedLogger(new UnityLogger(), true);
+
+            DrawHeader();
+        }
+
+        private void Update()
+        {
+            if (TryLoadCurrentGit()) _target = null;
+
+            if (_target != Selection.activeTransform?.gameObject)
+            {
+                // _logger?.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
+                _target = Selection.activeTransform?.gameObject;
+
+                if (_target != null)
+                {
+                    DisplayGameObjectLog();
+                }
+                else
+                {
+                    DisplaySceneLog();
+                }
+            }
+
+            dirtyFlagElement.SetEnabled(IsDirty());
         }
 
         private void OnSceneSaved(Scene scene)
@@ -86,18 +109,16 @@ namespace Negi0109.HistoryViewer.Editors
 
         private void CacheCommitDiffs()
         {
-            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
-            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
-
             diffs = new();
 
             var targetGOId = GlobalObjectId.GetGlobalObjectIdSlow(_target);
             var targetId = targetGOId.targetObjectId ^ targetGOId.targetPrefabId;
 
+            var commits = CurrentGit().commits;
 
-            for (var i = 1; i < currentGit.commits.Count; i++)
+            for (var i = 1; i < commits.Count; i++)
             {
-                var diff = new ObjectCommitDiff(targetId, currentGit.commits[i], currentGit.commits[i - 1]);
+                var diff = new ObjectCommitDiff(targetId, commits[i], commits[i - 1]);
                 diffs.Add(diff);
             }
         }
@@ -143,11 +164,11 @@ namespace Negi0109.HistoryViewer.Editors
         private void ClickToolbarShowLogButton(ClickEvent e)
         {
             isShowLogs = !isShowLogs;
-            UpdateShowLogButton();
-            DisplayGameObjectLog();
+            DrawHeader();
+            DrawCommitDiffs();
         }
 
-        private void UpdateShowLogButton()
+        private void DrawHeader()
         {
             var img = rootVisualElement.Q("toolbar-showlog").Q<Image>();
             img.image = EditorGUIUtility.IconContent(
@@ -155,48 +176,56 @@ namespace Negi0109.HistoryViewer.Editors
             ).image;
         }
 
-        private void InitScene()
+        private SceneGit LoadSceneGit(string path)
         {
-            try
-            {
-                _logger?.PrintLog();
-                _logger ??= new BufferedLogger(new UnityLogger(), true);
+            var git = new GitCommandExecutor(_logger);
+            var fileLoader = new FileLoader(_logger);
 
-                var git = new GitCommandExecutor(_logger);
-                var fileLoader = new FileLoader(_logger);
+            var sceneGit = new SceneGit(
+                git,
+                fileLoader,
+                _currentScene.path,
+                _logger
+            );
+            sceneGit.LoadGitHistory();
 
-                _currentScene = SceneManager.GetActiveScene();
-                _sceneGit = new SceneGit(git, fileLoader, _currentScene.path, _logger);
-                _sceneGit.LoadGitHistory();
-            }
-            finally
-            {
-                _logger?.PrintLog("UnityHistoryViewer-log: LoadGitHistory");
-            }
-
-            Repaint();
+            return sceneGit;
         }
 
-        private void InitPrefab()
+        private void LoadSceneLog()
         {
-            try
+            _currentScene = SceneManager.GetActiveScene();
+            _sceneGit = LoadSceneGit(_currentScene.path);
+        }
+
+        private void LoadPrefabLog()
+        {
+            _currentPrefab = PrefabStageUtility.GetCurrentPrefabStage().assetPath;
+            _prefabGit = LoadSceneGit(_currentPrefab);
+        }
+
+        private bool TryLoadCurrentGit()
+        {
+            if (IsPrefabMode())
             {
-                _logger?.PrintLog();
-                _logger ??= new BufferedLogger(new UnityLogger(), true);
-
-                var git = new GitCommandExecutor(_logger);
-                var fileLoader = new FileLoader(_logger);
-
-                _currentPrefab = PrefabStageUtility.GetCurrentPrefabStage().assetPath;
-                _prefabGit = new SceneGit(git, fileLoader, _currentPrefab, _logger);
-                _prefabGit.LoadGitHistory();
+                var currentPrefab = PrefabStageUtility.GetCurrentPrefabStage().assetPath;
+                if (_currentPrefab == null || !currentPrefab.Equals(_currentPrefab))
+                {
+                    LoadPrefabLog();
+                    return true;
+                }
             }
-            finally
+            else
             {
-                _logger?.PrintLog("UnityHistoryViewer-log: LoadGitHistory");
+                var currentScene = SceneManager.GetActiveScene();
+                if (_currentScene == null || !currentScene.Equals(_currentScene))
+                {
+                    LoadSceneLog();
+                    return true;
+                }
             }
 
-            Repaint();
+            return false;
         }
 
         private void DisplaySceneLog()
@@ -204,27 +233,21 @@ namespace Negi0109.HistoryViewer.Editors
             gameObjectHistory.SetEnabled(false);
             sceneHistory.SetEnabled(true);
 
-            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
-            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
 
-            if (currentGit == null)
-            {
-                if (isPrefabMode) InitPrefab();
-                else InitScene();
+            if (TryLoadCurrentGit()) _target = null;
 
-                _target = null;
-            }
+            var commits = CurrentGit().commits;
 
-            sceneHistory.Q<Label>("SceneName").text = isPrefabMode ?
+            sceneHistory.Q<Label>("SceneName").text = IsPrefabMode() ?
                 PrefabStageUtility.GetCurrentPrefabStage().prefabContentsRoot.name :
                 SceneManager.GetActiveScene().name;
 
             var commitsView = sceneHistory.Q("commits");
             commitsView.Clear();
 
-            for (var i = 0; i < currentGit.commits.Count; i++)
+            for (var i = 0; i < commits.Count; i++)
             {
-                var commit = currentGit.commits[i];
+                var commit = commits[i];
 
                 var child = _sceneCommitFactory.Build(commit);
                 if (i % 2 == 0) child.AddToClassList("alternate");
@@ -248,56 +271,11 @@ namespace Negi0109.HistoryViewer.Editors
             _logger?.PrintLog("UnityHistoryViewer-log: SelectGameObject");
         }
 
-        private bool IsDirty()
-        {
-            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
-
-            return isPrefabMode ?
+        private bool IsDirty() => IsPrefabMode() ?
                 PrefabStageUtility.GetCurrentPrefabStage().scene.isDirty :
                 SceneManager.GetActiveScene().isDirty;
-        }
 
-        private void Update()
-        {
-            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
-            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
-
-            if (currentGit == null)
-            {
-                if (isPrefabMode) InitPrefab();
-                else InitScene();
-
-                _target = null;
-            }
-
-            if (isPrefabMode)
-            {
-                var currentPrefab = PrefabStageUtility.GetCurrentPrefabStage().assetPath;
-                if (!currentPrefab.Equals(_currentPrefab)) InitPrefab();
-            }
-            else
-            {
-                _currentPrefab = null;
-                var currentScene = SceneManager.GetActiveScene();
-                if (!currentScene.Equals(_currentScene)) InitScene();
-            }
-
-            if (_target != Selection.activeTransform?.gameObject)
-            {
-                // _logger?.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
-                _target = Selection.activeTransform?.gameObject;
-
-                if (_target != null)
-                {
-                    DisplayGameObjectLog();
-                }
-                else
-                {
-                    DisplaySceneLog();
-                }
-            }
-
-            dirtyFlagElement.SetEnabled(IsDirty());
-        }
+        private SceneGit CurrentGit() => IsPrefabMode() ? _prefabGit : _sceneGit;
+        private bool IsPrefabMode() => PrefabStageUtility.GetCurrentPrefabStage() != null;
     }
 }
