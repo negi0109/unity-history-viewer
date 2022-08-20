@@ -54,6 +54,9 @@ namespace Negi0109.HistoryViewer.Editors
             );
             _sceneCommitFactory = new(sceneCommitAsset);
 
+            EditorSceneManager.sceneSaved += OnSceneSaved;
+            PrefabStage.prefabSaved += OnPrefabSaved;
+
             rootAsset.CloneTree(root);
             gameObjectHistory = root.Q("gameObject-logs");
             dirtyFlagElement = gameObjectHistory.Q("GameObjectDirty");
@@ -63,11 +66,85 @@ namespace Negi0109.HistoryViewer.Editors
             UpdateShowLogButton();
         }
 
+        private void OnSceneSaved(Scene scene)
+        {
+            _logger?.Log($"saved {scene.name}");
+            _sceneGit?.ReloadCurrentFile();
+            ReDrawCurrentCommitDiff();
+
+            _logger?.PrintLog("Save Scene");
+        }
+
+        private void OnPrefabSaved(GameObject go)
+        {
+            _logger?.Log($"saved prefab {go.name}");
+            _sceneGit?.ReloadCurrentFile();
+            ReDrawCurrentCommitDiff();
+
+            _logger?.PrintLog("Save Prefab");
+        }
+
+        private void CacheCommitDiffs()
+        {
+            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
+            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
+
+            diffs = new();
+
+            var targetGOId = GlobalObjectId.GetGlobalObjectIdSlow(_target);
+            var targetId = targetGOId.targetObjectId ^ targetGOId.targetPrefabId;
+
+
+            for (var i = 1; i < currentGit.commits.Count; i++)
+            {
+                var diff = new ObjectCommitDiff(targetId, currentGit.commits[i], currentGit.commits[i - 1]);
+                diffs.Add(diff);
+            }
+        }
+
+        private void DrawCommitDiffs()
+        {
+            var commitsView = gameObjectHistory.Q("commits");
+            commitsView.Clear();
+
+            for (var i = 0; i < diffs.Count; i++)
+            {
+                var diff = diffs[i];
+
+                if (i != 1 && diff.IsSame && !isShowLogs) continue;
+
+                var child = _commitDiffFactory.Build(diff);
+                if (i % 2 != 0) child.AddToClassList("alternate");
+
+                commitsView.Add(child);
+            }
+        }
+
+        private void ReDrawCurrentCommitDiff()
+        {
+            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
+            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
+
+            var targetGOId = GlobalObjectId.GetGlobalObjectIdSlow(_target);
+            var targetId = targetGOId.targetObjectId ^ targetGOId.targetPrefabId;
+            var commitsView = gameObjectHistory.Q("commits");
+
+            if (commitsView.childCount >= 1)
+            {
+                diffs[0] = new ObjectCommitDiff(targetId, currentGit.commits[1], currentGit.commits[0]);
+
+                _commitDiffFactory.Replace(
+                    diffs[0],
+                    commitsView[0]
+                );
+            }
+        }
+
         private void ClickToolbarShowLogButton(ClickEvent e)
         {
             isShowLogs = !isShowLogs;
             UpdateShowLogButton();
-            SelectGameObject();
+            DisplayGameObjectLog();
         }
 
         private void UpdateShowLogButton()
@@ -94,7 +171,7 @@ namespace Negi0109.HistoryViewer.Editors
             }
             finally
             {
-                _logger.PrintLog("UnityHistoryViewer-log: LoadGitHistory");
+                _logger?.PrintLog("UnityHistoryViewer-log: LoadGitHistory");
             }
 
             Repaint();
@@ -116,7 +193,7 @@ namespace Negi0109.HistoryViewer.Editors
             }
             finally
             {
-                _logger.PrintLog("UnityHistoryViewer-log: LoadGitHistory");
+                _logger?.PrintLog("UnityHistoryViewer-log: LoadGitHistory");
             }
 
             Repaint();
@@ -154,45 +231,25 @@ namespace Negi0109.HistoryViewer.Editors
 
                 commitsView.Add(child);
             }
-            _logger.PrintLog("UnityHistoryViewer-log: DisplayScene");
+            _logger?.PrintLog("UnityHistoryViewer-log: DisplayScene");
         }
 
-        private void SelectGameObject()
+        private void DisplayGameObjectLog()
         {
             gameObjectHistory.SetEnabled(true);
             sceneHistory.SetEnabled(false);
 
-            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
-            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
-
             SerializedObject so = new(_target);
             rootVisualElement.Bind(so);
 
-            diffs = new();
+            CacheCommitDiffs();
+            DrawCommitDiffs();
 
-            var targetId = GlobalObjectId.GetGlobalObjectIdSlow(_target).targetObjectId
-                                ^ GlobalObjectId.GetGlobalObjectIdSlow(_target).targetPrefabId;
-            var commitsView = gameObjectHistory.Q("commits");
-            commitsView.Clear();
-
-            for (var i = 1; i < currentGit.commits.Count; i++)
-            {
-                var diff = new ObjectCommitDiff(targetId, currentGit.commits[i], currentGit.commits[i - 1]);
-                diffs.Add(diff);
-
-                if (i != 1 && diff.IsSame && !isShowLogs) continue;
-
-                var child = _commitDiffFactory.Build(diff);
-                if (i % 2 != 0) child.AddToClassList("alternate");
-
-                commitsView.Add(child);
-            }
-            _logger.PrintLog("UnityHistoryViewer-log: SelectGameObject");
+            _logger?.PrintLog("UnityHistoryViewer-log: SelectGameObject");
         }
 
         private bool IsDirty()
         {
-
             var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
 
             return isPrefabMode ?
@@ -227,12 +284,12 @@ namespace Negi0109.HistoryViewer.Editors
 
             if (_target != Selection.activeTransform?.gameObject)
             {
-                // _logger.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
+                // _logger?.Log($"Selection: {_target} -> {Selection.activeTransform?.gameObject?.name}");
                 _target = Selection.activeTransform?.gameObject;
 
                 if (_target != null)
                 {
-                    SelectGameObject();
+                    DisplayGameObjectLog();
                 }
                 else
                 {

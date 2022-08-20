@@ -19,14 +19,15 @@ namespace Negi0109.HistoryViewer.Editors
             _componentDiffViewFactory = componentDiffViewFactory;
         }
 
-        public VisualElement Build(ObjectCommitDiff diff)
+        public void Replace(ObjectCommitDiff diff, VisualElement child)
         {
-            VisualElement child = new();
-            _asset.CloneTree(child);
-
-
             var label = child.Q<Label>("commit_name");
             var stateLabel = child.Q<Label>("state");
+            var components = child.Q("components");
+
+            child.RemoveFromClassList("disabled");
+            components.RemoveFromClassList("disabled");
+            components.Clear();
 
             label.text = diff.dest.name;
 
@@ -49,7 +50,6 @@ namespace Negi0109.HistoryViewer.Editors
                 stateLabel.AddToClassList("disabled");
             }
 
-            var components = child.Q("components");
             if (diff.Diff.components.Any())
             {
                 foreach (var component in diff.Diff.components)
@@ -61,6 +61,14 @@ namespace Negi0109.HistoryViewer.Editors
             {
                 components.AddToClassList("disabled");
             }
+        }
+
+        public VisualElement Build(ObjectCommitDiff diff)
+        {
+            VisualElement child = new();
+            _asset.CloneTree(child);
+
+            Replace(diff, child);
 
             return child;
         }

@@ -20,6 +20,34 @@ namespace Negi0109.HistoryViewer.Models
             _logger = logger;
         }
 
+        public void ReloadCurrentFile() => LoadFile(commits[0]);
+
+        private void LoadFile(GitCommit commit)
+        {
+            if (commit.IsLocalFile)
+            {
+                _fileLoader.LoadFile(
+                    _scenePath,
+                    reader =>
+                    {
+                        var parser = new UnityYamlParser(_unityYamlDocumentPool, _logger);
+                        commit.unityYaml = parser.Parse(reader);
+                    }
+                );
+            }
+            else
+            {
+                _git.ExecGitCommand(
+                    $"show {commit.hashId}:\"{_scenePath}\"",
+                    reader =>
+                    {
+                        var parser = new UnityYamlParser(_unityYamlDocumentPool, _logger);
+                        commit.unityYaml = parser.Parse(reader);
+                    }
+                );
+            }
+        }
+
         public void LoadGitHistory()
         {
             var loader = new GitLogLoader(_git, _logger);
@@ -29,31 +57,7 @@ namespace Negi0109.HistoryViewer.Models
             commits.Insert(0, new GitCommit(null, "Current"));
 
             // コミットのファイルの取得
-            foreach (var commit in commits)
-            {
-                if (commit.IsLocalFile)
-                {
-                    _fileLoader.LoadFile(
-                        _scenePath,
-                        reader =>
-                        {
-                            var parser = new UnityYamlParser(_unityYamlDocumentPool, _logger);
-                            commit.unityYaml = parser.Parse(reader);
-                        }
-                    );
-                }
-                else
-                {
-                    _git.ExecGitCommand(
-                        $"show {commit.hashId}:\"{_scenePath}\"",
-                        reader =>
-                        {
-                            var parser = new UnityYamlParser(_unityYamlDocumentPool, _logger);
-                            commit.unityYaml = parser.Parse(reader);
-                        }
-                    );
-                }
-            }
+            foreach (var commit in commits) LoadFile(commit);
         }
     }
 }
