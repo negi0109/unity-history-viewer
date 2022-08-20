@@ -184,7 +184,7 @@ namespace Negi0109.HistoryViewer.Editors
             var sceneGit = new SceneGit(
                 git,
                 fileLoader,
-                _currentScene.path,
+                path,
                 _logger
             );
             sceneGit.LoadGitHistory();
