@@ -1,6 +1,5 @@
 using UnityEditor;
 using UnityEngine;
-using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using Negi0109.HistoryViewer.Models;
@@ -32,7 +31,7 @@ namespace Negi0109.HistoryViewer.Editors
         private List<ObjectCommitDiff> diffs;
 
         private VisualElement gameObjectHistory;
-        private VisualElement sceneHistory;
+        private SceneHistoryView sceneHistory;
         private VisualElement dirtyFlagElement;
 
         private bool isShowLogs = false;
@@ -59,7 +58,8 @@ namespace Negi0109.HistoryViewer.Editors
             rootAsset.CloneTree(root);
             gameObjectHistory = root.Q("gameObject-logs");
             dirtyFlagElement = gameObjectHistory.Q("GameObjectDirty");
-            sceneHistory = root.Q("scene-logs");
+            sceneHistory = new(root.Q("scene-logs"), this, sceneCommitAsset);
+
             root.Q("toolbar-showlog").RegisterCallback<ClickEvent>(ClickToolbarShowLogButton);
 
             _logger ??= new BufferedLogger(new UnityLogger(), true);
@@ -236,27 +236,8 @@ namespace Negi0109.HistoryViewer.Editors
             gameObjectHistory.SetEnabled(false);
             sceneHistory.SetEnabled(true);
 
+            sceneHistory.Display();
 
-            if (TryLoadCurrentGit()) _target = null;
-
-            var commits = CurrentGit().commits;
-
-            sceneHistory.Q<Label>("SceneName").text = IsPrefabMode() ?
-                PrefabStageUtility.GetCurrentPrefabStage().prefabContentsRoot.name :
-                SceneManager.GetActiveScene().name;
-
-            var commitsView = sceneHistory.Q("commits");
-            commitsView.Clear();
-
-            for (var i = 0; i < commits.Count; i++)
-            {
-                var commit = commits[i];
-
-                var child = _sceneCommitFactory.Build(commit);
-                if (i % 2 == 0) child.AddToClassList("alternate");
-
-                commitsView.Add(child);
-            }
             _logger?.PrintLog("UnityHistoryViewer-log: DisplayScene");
         }
 
@@ -274,11 +255,11 @@ namespace Negi0109.HistoryViewer.Editors
             _logger?.PrintLog("UnityHistoryViewer-log: SelectGameObject");
         }
 
-        private bool IsDirty() => IsPrefabMode() ?
+        public bool IsDirty() => IsPrefabMode() ?
                 PrefabStageUtility.GetCurrentPrefabStage().scene.isDirty :
                 SceneManager.GetActiveScene().isDirty;
 
-        private SceneGit CurrentGit() => IsPrefabMode() ? _prefabGit : _sceneGit;
-        private bool IsPrefabMode() => PrefabStageUtility.GetCurrentPrefabStage() != null;
+        public SceneGit CurrentGit() => IsPrefabMode() ? _prefabGit : _sceneGit;
+        public bool IsPrefabMode() => PrefabStageUtility.GetCurrentPrefabStage() != null;
     }
 }
