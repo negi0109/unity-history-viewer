@@ -128,6 +128,7 @@ namespace Negi0109.HistoryViewer.Editors
             var commitsView = gameObjectHistory.Q("commits");
             commitsView.Clear();
 
+            var alternate = true;
             for (var i = 0; i < diffs.Count; i++)
             {
                 var diff = diffs[i];
@@ -135,9 +136,11 @@ namespace Negi0109.HistoryViewer.Editors
                 if (i != 1 && diff.IsSame && !isShowLogs) continue;
 
                 var child = _commitDiffFactory.Build(diff);
-                if (i % 2 != 0) child.AddToClassList("alternate");
+                if (alternate) child.AddToClassList("alternate");
 
                 commitsView.Add(child);
+
+                alternate = !alternate;
             }
         }
 
