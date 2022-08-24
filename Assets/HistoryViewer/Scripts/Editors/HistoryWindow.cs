@@ -17,8 +17,6 @@ namespace Negi0109.HistoryViewer.Editors
         public VisualTreeAsset commitDiffAsset;
         public VisualTreeAsset sceneCommitAsset;
         public VisualTreeAsset componentDiffAsset;
-        private CommitDiffViewFactory _commitDiffFactory;
-        private SceneCommitViewFactory _sceneCommitFactory;
 
         private GameObject _target;
         private Scene _currentScene;
@@ -28,11 +26,8 @@ namespace Negi0109.HistoryViewer.Editors
 
         private BufferedLogger _logger;
 
-        private List<ObjectCommitDiff> diffs;
-
-        private VisualElement gameObjectHistory;
+        private GameObjectHistoryView gameObjectHistory;
         private SceneHistoryView sceneHistory;
-        private VisualElement dirtyFlagElement;
 
         private bool isShowLogs = false;
 
@@ -46,18 +41,12 @@ namespace Negi0109.HistoryViewer.Editors
         public void OnEnable()
         {
             var root = rootVisualElement;
-            _commitDiffFactory = new(
-                commitDiffAsset,
-                new CommitComponentDiffViewFactory(componentDiffAsset)
-            );
-            _sceneCommitFactory = new(sceneCommitAsset);
 
             EditorSceneManager.sceneSaved += OnSceneSaved;
             PrefabStage.prefabSaved += OnPrefabSaved;
 
             rootAsset.CloneTree(root);
-            gameObjectHistory = root.Q("gameObject-logs");
-            dirtyFlagElement = gameObjectHistory.Q("GameObjectDirty");
+            gameObjectHistory = new(root.Q("gameObject-logs"), this, commitDiffAsset, componentDiffAsset);
             sceneHistory = new(root.Q("scene-logs"), this, sceneCommitAsset);
 
             root.Q("toolbar-showlog").RegisterCallback<ClickEvent>(ClickToolbarShowLogButton);
@@ -86,7 +75,7 @@ namespace Negi0109.HistoryViewer.Editors
                 }
             }
 
-            dirtyFlagElement.SetEnabled(IsDirty());
+            gameObjectHistory.SetDirty(IsDirty());
         }
 
         private void OnSceneSaved(Scene scene)
@@ -107,68 +96,16 @@ namespace Negi0109.HistoryViewer.Editors
             _logger?.PrintLog("Save Prefab");
         }
 
-        private void CacheCommitDiffs()
-        {
-            diffs = new();
-
-            var targetGOId = GlobalObjectId.GetGlobalObjectIdSlow(_target);
-            var targetId = targetGOId.targetObjectId ^ targetGOId.targetPrefabId;
-
-            var commits = CurrentGit().commits;
-
-            for (var i = 1; i < commits.Count; i++)
-            {
-                var diff = new ObjectCommitDiff(targetId, commits[i], commits[i - 1]);
-                diffs.Add(diff);
-            }
-        }
-
-        private void DrawCommitDiffs()
-        {
-            var commitsView = gameObjectHistory.Q("commits");
-            commitsView.Clear();
-
-            var alternate = true;
-            for (var i = 0; i < diffs.Count; i++)
-            {
-                var diff = diffs[i];
-
-                if (i != 1 && diff.IsSame && !isShowLogs) continue;
-
-                var child = _commitDiffFactory.Build(diff);
-                if (alternate) child.AddToClassList("alternate");
-
-                commitsView.Add(child);
-
-                alternate = !alternate;
-            }
-        }
-
         private void ReDrawCurrentCommitDiff()
         {
-            var isPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
-            var currentGit = isPrefabMode ? _prefabGit : _sceneGit;
-
-            var targetGOId = GlobalObjectId.GetGlobalObjectIdSlow(_target);
-            var targetId = targetGOId.targetObjectId ^ targetGOId.targetPrefabId;
-            var commitsView = gameObjectHistory.Q("commits");
-
-            if (commitsView.childCount >= 1)
-            {
-                diffs[0] = new ObjectCommitDiff(targetId, currentGit.commits[1], currentGit.commits[0]);
-
-                _commitDiffFactory.Replace(
-                    diffs[0],
-                    commitsView[0]
-                );
-            }
+            gameObjectHistory.ReDrawCurrentCommitDiff();
         }
 
         private void ClickToolbarShowLogButton(ClickEvent e)
         {
             isShowLogs = !isShowLogs;
             DrawHeader();
-            DrawCommitDiffs();
+            gameObjectHistory.DrawCommitDiffs(isShowLogs);
         }
 
         private void DrawHeader()
@@ -246,11 +183,8 @@ namespace Negi0109.HistoryViewer.Editors
             gameObjectHistory.SetEnabled(true);
             sceneHistory.SetEnabled(false);
 
-            SerializedObject so = new(_target);
-            rootVisualElement.Bind(so);
-
-            CacheCommitDiffs();
-            DrawCommitDiffs();
+            gameObjectHistory.SetGameObject(_target);
+            gameObjectHistory.DrawCommitDiffs(isShowLogs);
 
             _logger?.PrintLog("UnityHistoryViewer-log: SelectGameObject");
         }
