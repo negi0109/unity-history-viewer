@@ -1,9 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
 using Negi0109.HistoryViewer.Models;
-using Negi0109.HistoryViewer.Middleware;
 using System.Collections.Generic;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
