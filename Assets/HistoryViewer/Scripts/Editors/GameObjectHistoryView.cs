@@ -60,7 +60,7 @@ namespace Negi0109.HistoryViewer.Editors
             {
                 var diff = diffs[i];
 
-                if (i != 1 && diff.IsSame && !isShowLogs) continue;
+                if (i != 0 && diff.IsSame && !isShowLogs) continue;
 
                 var child = _gameObjectCommitFactory.Build(diff);
                 if (alternate) child.AddToClassList("alternate");
