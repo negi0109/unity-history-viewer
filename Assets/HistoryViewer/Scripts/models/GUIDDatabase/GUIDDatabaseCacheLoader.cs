@@ -21,7 +21,7 @@ namespace Negi0109.HistoryViewer.Models
 
             foreach (var kvp in database.dic)
             {
-                content.AppendLine(kvp.Key + "," + kvp.Value);
+                content.Append(kvp.Key + "," + kvp.Value).Append('\n');
             }
             _editorCache.Put(cacheLabel, key, content.ToString());
         }

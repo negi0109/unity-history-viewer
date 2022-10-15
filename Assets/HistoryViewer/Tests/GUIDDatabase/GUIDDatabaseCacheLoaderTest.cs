@@ -22,7 +22,7 @@ public class GUIDDatabaseCacheLoaderTest
         _loader.Put(key, db);
 
         var content = _cache.Get(GUIDDatabaseCacheLoader.cacheLabel, key);
-        var array = content.Split(Environment.NewLine);
+        var array = content.Split('\n');
 
         Assert.That(array[0], Is.EqualTo($"{id},{path}"));
     }
@@ -36,7 +36,7 @@ public class GUIDDatabaseCacheLoaderTest
         _loader.Put(key, db);
 
         var content = _cache.Get(GUIDDatabaseCacheLoader.cacheLabel, key);
-        var array = content.Split(Environment.NewLine);
+        var array = content.Split('\n');
 
         Assert.That(array[0], Is.EqualTo($"{id},{path}"));
         Assert.That(array[1], Is.EqualTo($"{id2},{path2}"));
