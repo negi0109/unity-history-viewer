@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Collections.Generic;
 using Negi0109.HistoryViewer.Interfaces;
@@ -9,6 +10,7 @@ namespace Negi0109.HistoryViewer.Middleware
     {
         private HashSet<string> labels = new();
         private string basePath = Application.dataPath + "/../Library/negi0109.history-viewer/caches";
+        private FileLoader fileLoader = new FileLoader();
 
         public EditorCache()
         {
@@ -23,6 +25,11 @@ namespace Negi0109.HistoryViewer.Middleware
         public string Get(string label, string key)
         {
             return File.ReadAllText(basePath + "/" + label + "/" + key);
+        }
+
+        public void Get(string label, string key, Action<StreamReader> func)
+        {
+            fileLoader.LoadFile(basePath + "/" + label + "/" + key, func);
         }
 
         public void Put(string label, string key, string content)
