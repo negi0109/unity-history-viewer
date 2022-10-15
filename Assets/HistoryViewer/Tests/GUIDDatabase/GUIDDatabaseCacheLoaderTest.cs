@@ -58,4 +58,18 @@ public class GUIDDatabaseCacheLoaderTest
         Assert.That(db.dic[id], Is.EqualTo(path));
         Assert.That(db.dic[id2], Is.EqualTo(path2));
     }
+
+    [TestCase("key", "id,path")]
+    public void Exist(string key, string text)
+    {
+        _cache.Put(GUIDDatabaseCacheLoader.cacheLabel, key, text);
+
+        Assert.That(_loader.Exists(key), Is.EqualTo(true));
+    }
+
+    [TestCase("key")]
+    public void NotExist(string key)
+    {
+        Assert.That(_loader.Exists(key), Is.EqualTo(false));
+    }
 }
