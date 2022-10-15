@@ -41,4 +41,21 @@ public class GUIDDatabaseCacheLoaderTest
         Assert.That(array[0], Is.EqualTo($"{id},{path}"));
         Assert.That(array[1], Is.EqualTo($"{id2},{path2}"));
     }
+
+    [TestCase("key", "id,path", "id", "path")]
+    public void Get1(string key, string text, string id, string path)
+    {
+        _cache.Put(GUIDDatabaseCacheLoader.cacheLabel, key, text);
+        var db = _loader.Get(key);
+        Assert.That(db.dic[id], Is.EqualTo(path));
+    }
+
+    [TestCase("key", "id,path\nid2,path2", "id", "path", "id2", "path2")]
+    public void Get2(string key, string text, string id, string path, string id2, string path2)
+    {
+        _cache.Put(GUIDDatabaseCacheLoader.cacheLabel, key, text);
+        var db = _loader.Get(key);
+        Assert.That(db.dic[id], Is.EqualTo(path));
+        Assert.That(db.dic[id2], Is.EqualTo(path2));
+    }
 }

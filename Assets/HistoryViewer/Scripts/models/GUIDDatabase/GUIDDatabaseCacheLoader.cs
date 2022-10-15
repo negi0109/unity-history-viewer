@@ -25,5 +25,22 @@ namespace Negi0109.HistoryViewer.Models
             }
             _editorCache.Put(cacheLabel, key, content.ToString());
         }
+
+        public GUIDDatabase Get(string key)
+        {
+            GUIDDatabase db = new();
+            _editorCache.Get(cacheLabel, key, reader =>
+            {
+                do
+                {
+                    var line = reader.ReadLine();
+                    var kvp = line.Split(",");
+
+                    db.dic[kvp[0]] = kvp[1];
+                } while (!reader.EndOfStream);
+            });
+
+            return db;
+        }
     }
 }
