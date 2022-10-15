@@ -36,8 +36,7 @@ namespace Negi0109.HistoryViewer.Models
 
                 if (!string.IsNullOrEmpty(line))
                 {
-                    content.Append('\n');
-                    content.Append(line);
+                    content.Append(line).Append('\n');
                 }
             } while (!reader.EndOfStream);
 
