@@ -10,14 +10,16 @@ namespace Negi0109.HistoryViewer.Models
         private readonly ILogger _logger;
         private readonly string _scenePath;
         private readonly Dictionary<string, UnityYamlDocument> _unityYamlDocumentPool = new();
+        private readonly GUIDDatabaseManager _guidDatabaseManager;
         public List<GitCommit> commits;
 
-        public SceneGit(IGitCommandExecutor gce, IFileLoader fileLoader, string scenePath, ILogger logger = null)
+        public SceneGit(IGitCommandExecutor gce, IFileLoader fileLoader, string scenePath, GUIDDatabaseManager guidDatabaseManager, ILogger logger = null)
         {
             _git = gce;
             _fileLoader = fileLoader;
             _scenePath = scenePath;
             _logger = logger;
+            _guidDatabaseManager = guidDatabaseManager;
         }
 
         public void ReloadCurrentFile() => LoadFile(commits[0]);
@@ -45,6 +47,7 @@ namespace Negi0109.HistoryViewer.Models
                         commit.unityYaml = parser.Parse(reader);
                     }
                 );
+                _guidDatabaseManager.LoadGitGUIDDatabase(commit.hashId);
             }
         }
 

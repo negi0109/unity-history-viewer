@@ -1,5 +1,5 @@
-using Negi0109.HistoryViewer.Interfaces;
 using System.Text;
+using Negi0109.HistoryViewer.Interfaces;
 
 namespace Negi0109.HistoryViewer.Models
 {
@@ -31,13 +31,13 @@ namespace Negi0109.HistoryViewer.Models
             GUIDDatabase db = new();
             _editorCache.Get(cacheLabel, key, reader =>
             {
-                do
+                while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
                     var kvp = line.Split(",");
 
                     db.dic[kvp[0]] = kvp[1];
-                } while (!reader.EndOfStream);
+                }
             });
 
             return db;
