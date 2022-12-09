@@ -14,7 +14,7 @@ namespace Negi0109.HistoryViewer.Models
         {
             _editorCache = editorCache;
             _gitCommandExecutor = gitCommandExecutor;
-            _databaseCacheLoader = new GUIDDatabaseCacheLoader(_editorCache, "prefab");
+            _databaseCacheLoader = new GUIDDatabaseCacheLoader(_editorCache, "prefab", logger);
             _logger = logger;
         }
 
@@ -22,13 +22,10 @@ namespace Negi0109.HistoryViewer.Models
         {
             if (_databaseCacheLoader.Exists(hash))
             {
-                _logger?.Log("guidDatabase: cache-hit");
                 return _databaseCacheLoader.Get(hash);
             }
             else
             {
-                _logger?.Log("guidDatabase: cache-miss");
-
                 var database = new GUIDDatabase();
                 _gitCommandExecutor.ExecGitCommand($"ls-tree -r --name-only {hash}", (reader) =>
                 {
@@ -46,7 +43,6 @@ namespace Negi0109.HistoryViewer.Models
                     }
                 });
 
-                _logger?.Log("guidDatabase: put-cache");
                 _databaseCacheLoader.Put(hash, database);
 
                 return database;
