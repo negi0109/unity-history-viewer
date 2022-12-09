@@ -10,21 +10,24 @@ namespace Negi0109.HistoryViewer.Models
         private readonly ILogger _logger;
         private readonly string _scenePath;
         private readonly Dictionary<string, UnityYamlDocument> _unityYamlDocumentPool = new();
-        private readonly GUIDDatabaseManager _guidDatabaseManager;
+        private readonly IEditorCache _editorCache;
+        private readonly PrefabGUIDDatabaseLoader _prefabGUIDDatabaseLoader;
+
         public List<GitCommit> commits;
 
-        public SceneGit(IGitCommandExecutor gce, IFileLoader fileLoader, string scenePath, GUIDDatabaseManager guidDatabaseManager, ILogger logger = null)
+        public SceneGit(IGitCommandExecutor gce, IFileLoader fileLoader, string scenePath, IEditorCache editorCache, ILogger logger = null)
         {
             _git = gce;
             _fileLoader = fileLoader;
             _scenePath = scenePath;
             _logger = logger;
-            _guidDatabaseManager = guidDatabaseManager;
+            _editorCache = editorCache;
+            _prefabGUIDDatabaseLoader = new(editorCache, gce, logger);
         }
 
-        public void ReloadCurrentFile() => LoadFile(commits[0]);
+        public void ReloadCurrentFile() => Load(commits[0]);
 
-        private void LoadFile(GitCommit commit)
+        private void Load(GitCommit commit)
         {
             if (commit.IsLocalFile)
             {
@@ -47,7 +50,6 @@ namespace Negi0109.HistoryViewer.Models
                         commit.unityYaml = parser.Parse(reader);
                     }
                 );
-                _guidDatabaseManager.LoadGitGUIDDatabase(commit.hashId);
             }
         }
 
@@ -60,7 +62,7 @@ namespace Negi0109.HistoryViewer.Models
             commits.Insert(0, new GitCommit(null, "Current"));
 
             // コミットのファイルの取得
-            foreach (var commit in commits) LoadFile(commit);
+            foreach (var commit in commits) Load(commit);
         }
     }
 }

@@ -1,3 +1,5 @@
+using Negi0109.HistoryViewer.Interfaces;
+
 namespace Negi0109.HistoryViewer.Models
 {
     public class GitCommit
@@ -7,6 +9,7 @@ namespace Negi0109.HistoryViewer.Models
         public readonly string hashId;
         public readonly string name;
         public UnityYaml unityYaml;
+        public GUIDDatabase prefabDatabase;
 
         public GitCommit(string hashId, string name)
         {

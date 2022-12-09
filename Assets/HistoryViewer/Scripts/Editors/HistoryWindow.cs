@@ -127,7 +127,7 @@ namespace Negi0109.HistoryViewer.Editors
                 git,
                 fileLoader,
                 path,
-                new GUIDDatabaseManager(_editorCache, git, _logger),
+                _editorCache,
                 _logger
             );
             sceneGit.LoadGitHistory();

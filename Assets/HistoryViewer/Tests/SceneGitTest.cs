@@ -12,7 +12,7 @@ public class SceneGitTest
             private Dictionary<string, string> _gitDic;
             private Dictionary<string, string> _fileDic;
             private IGitCommandExecutor _git;
-            private GUIDDatabaseManager _guidDatabaseManager = new GUIDDatabaseManager(new EditorCacheStub(), new GitCommandExecutorStub());
+            private IEditorCache _editorCache = new EditorCacheStub();
             private IFileLoader _fileLoader;
 
             [SetUp]
@@ -65,7 +65,7 @@ GameObject:
             [Test]
             public void LoadLocal()
             {
-                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _guidDatabaseManager);
+                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _editorCache);
                 _sceneGit.LoadGitHistory();
 
                 Assert.That(_sceneGit.commits[0].IsLocalFile, Is.True);
@@ -76,7 +76,7 @@ GameObject:
             [Test]
             public void LoadName()
             {
-                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _guidDatabaseManager);
+                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _editorCache);
                 _sceneGit.LoadGitHistory();
 
                 Assert.That(_sceneGit.commits[0].name, Is.EqualTo("Current"));
@@ -87,7 +87,7 @@ GameObject:
             [Test]
             public void LoadGameObjectNameLogs()
             {
-                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _guidDatabaseManager);
+                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _editorCache);
                 _sceneGit.LoadGitHistory();
 
                 Assert.That(_sceneGit.commits[0].unityYaml.gameObjectDocuments[490523428u].document.GameObject.name, Is.EqualTo("Sample Object Current"));
