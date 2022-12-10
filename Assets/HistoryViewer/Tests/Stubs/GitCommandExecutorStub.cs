@@ -9,8 +9,9 @@ public class GitCommandExecutorStub : IGitCommandExecutor
 {
     private readonly Dictionary<string, string> _dic;
 
-    public GitCommandExecutorStub(Dictionary<string, string> dic)
+    public GitCommandExecutorStub(Dictionary<string, string> dic = null)
     {
+        dic ??= new Dictionary<string, string>();
         _dic = dic;
     }
 

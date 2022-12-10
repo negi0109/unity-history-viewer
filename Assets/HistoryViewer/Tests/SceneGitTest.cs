@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using NUnit.Framework;
-using Negi0109.HistoryViewer.Models;
 using Negi0109.HistoryViewer.Interfaces;
+using Negi0109.HistoryViewer.Models;
+using NUnit.Framework;
 
 public class SceneGitTest
 {
@@ -12,6 +12,7 @@ public class SceneGitTest
             private Dictionary<string, string> _gitDic;
             private Dictionary<string, string> _fileDic;
             private IGitCommandExecutor _git;
+            private IEditorCache _editorCache = new EditorCacheStub();
             private IFileLoader _fileLoader;
 
             [SetUp]
@@ -64,7 +65,7 @@ GameObject:
             [Test]
             public void LoadLocal()
             {
-                var _sceneGit = new SceneGit(_git, _fileLoader, "path");
+                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _editorCache);
                 _sceneGit.LoadGitHistory();
 
                 Assert.That(_sceneGit.commits[0].IsLocalFile, Is.True);
@@ -75,7 +76,7 @@ GameObject:
             [Test]
             public void LoadName()
             {
-                var _sceneGit = new SceneGit(_git, _fileLoader, "path");
+                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _editorCache);
                 _sceneGit.LoadGitHistory();
 
                 Assert.That(_sceneGit.commits[0].name, Is.EqualTo("Current"));
@@ -86,7 +87,7 @@ GameObject:
             [Test]
             public void LoadGameObjectNameLogs()
             {
-                var _sceneGit = new SceneGit(_git, _fileLoader, "path");
+                var _sceneGit = new SceneGit(_git, _fileLoader, "path", _editorCache);
                 _sceneGit.LoadGitHistory();
 
                 Assert.That(_sceneGit.commits[0].unityYaml.gameObjectDocuments[490523428u].document.GameObject.name, Is.EqualTo("Sample Object Current"));
