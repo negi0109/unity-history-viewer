@@ -1,11 +1,11 @@
+using System.Collections.Generic;
+using Negi0109.HistoryViewer.Middleware;
+using Negi0109.HistoryViewer.Models;
 using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
-using Negi0109.HistoryViewer.Models;
-using Negi0109.HistoryViewer.Middleware;
-using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace Negi0109.HistoryViewer.Editors
@@ -28,6 +28,7 @@ namespace Negi0109.HistoryViewer.Editors
 
         private GameObjectHistoryView gameObjectHistory;
         private SceneHistoryView sceneHistory;
+        private EditorCache _editorCache;
 
         private bool isShowLogs = false;
 
@@ -41,17 +42,17 @@ namespace Negi0109.HistoryViewer.Editors
         public void OnEnable()
         {
             var root = rootVisualElement;
+            _logger ??= new BufferedLogger(new UnityLogger(), true);
 
             EditorSceneManager.sceneSaved += OnSceneSaved;
             PrefabStage.prefabSaved += OnPrefabSaved;
 
             rootAsset.CloneTree(root);
-            gameObjectHistory = new(root.Q("gameObject-logs"), this, commitDiffAsset, componentDiffAsset);
+            gameObjectHistory = new(root.Q("gameObject-logs"), this, commitDiffAsset, componentDiffAsset, _logger);
             sceneHistory = new(root.Q("scene-logs"), this, sceneCommitAsset);
 
             root.Q("toolbar-showlog").RegisterCallback<ClickEvent>(ClickToolbarShowLogButton);
 
-            _logger ??= new BufferedLogger(new UnityLogger(), true);
 
             DrawHeader();
         }
@@ -120,11 +121,13 @@ namespace Negi0109.HistoryViewer.Editors
         {
             var git = new GitCommandExecutor(_logger);
             var fileLoader = new FileLoader(_logger);
+            _editorCache ??= new EditorCache();
 
             var sceneGit = new SceneGit(
                 git,
                 fileLoader,
                 path,
+                _editorCache,
                 _logger
             );
             sceneGit.LoadGitHistory();

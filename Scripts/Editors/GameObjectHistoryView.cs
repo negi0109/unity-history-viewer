@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using Negi0109.HistoryViewer.Models;
+using Negi0109.HistoryViewer.Interfaces;
 using System.Collections.Generic;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -16,13 +17,15 @@ namespace Negi0109.HistoryViewer.Editors
         private readonly VisualElement _history;
         private readonly CommitDiffViewFactory _gameObjectCommitFactory;
         private readonly VisualElement dirtyFlagElement;
+        private readonly Interfaces.ILogger _logger;
 
-        public GameObjectHistoryView(VisualElement history, HistoryWindow wnd, VisualTreeAsset commitDiffAsset, VisualTreeAsset componentDiffAsset)
+        public GameObjectHistoryView(VisualElement history, HistoryWindow wnd, VisualTreeAsset commitDiffAsset, VisualTreeAsset componentDiffAsset, Interfaces.ILogger logger)
         {
             _wnd = wnd;
             _history = history;
-            _gameObjectCommitFactory = new(commitDiffAsset, new CommitComponentDiffViewFactory(componentDiffAsset));
+            _logger = logger;
 
+            _gameObjectCommitFactory = new(commitDiffAsset, new CommitComponentDiffViewFactory(componentDiffAsset, _logger));
             dirtyFlagElement = _history.Q("GameObjectDirty");
         }
 

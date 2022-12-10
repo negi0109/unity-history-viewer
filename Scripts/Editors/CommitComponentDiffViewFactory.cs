@@ -3,6 +3,8 @@ using Negi0109.HistoryViewer.Models;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Negi0109.HistoryViewer.Middleware;
+using Negi0109.HistoryViewer.Models;
 
 namespace Negi0109.HistoryViewer.Editors
 {
@@ -11,13 +13,17 @@ namespace Negi0109.HistoryViewer.Editors
     public class CommitComponentDiffViewFactory
     {
         private VisualTreeAsset _asset;
+        private Interfaces.ILogger _logger;
+        private EditorCache _editorCache = new EditorCache();
+        private GitCommandExecutor _git = new();
 
-        public CommitComponentDiffViewFactory(VisualTreeAsset asset)
+        public CommitComponentDiffViewFactory(VisualTreeAsset asset, Interfaces.ILogger logger)
         {
             _asset = asset;
+            _logger = logger;
         }
 
-        public VisualElement Build(ObjectCommitDiff.CommitDiff.Component component)
+        public VisualElement Build(ObjectCommitDiff.CommitDiff.Component component, ObjectCommitDiff commitDiff)
         {
             VisualElement child = new();
             _asset.CloneTree(child);
@@ -49,6 +55,19 @@ namespace Negi0109.HistoryViewer.Editors
                 if (!string.IsNullOrEmpty(file))
                 {
                     anyObjectName = Path.GetFileNameWithoutExtension(file);
+                } else {
+                    var fileCommit = component.state switch
+                    {
+                        ComponentState.Add => commitDiff.dest,
+                        ComponentState.Destroy => commitDiff.src,
+                        _ => commitDiff.src
+                    };
+                    if (!fileCommit.IsLocalFile) {
+                        fileCommit.LoadCsharpDatabase(_editorCache, _git, _logger);
+                        if (fileCommit.csDatabase.TryGetValue(anyObject.guid, out string name)) {
+                            anyObjectName = name;
+                        }
+                    }
                 }
             }
             anyObjectName ??= anyObject.name;
