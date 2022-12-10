@@ -42,17 +42,17 @@ namespace Negi0109.HistoryViewer.Editors
         public void OnEnable()
         {
             var root = rootVisualElement;
+            _logger ??= new BufferedLogger(new UnityLogger(), true);
 
             EditorSceneManager.sceneSaved += OnSceneSaved;
             PrefabStage.prefabSaved += OnPrefabSaved;
 
             rootAsset.CloneTree(root);
-            gameObjectHistory = new(root.Q("gameObject-logs"), this, commitDiffAsset, componentDiffAsset);
+            gameObjectHistory = new(root.Q("gameObject-logs"), this, commitDiffAsset, componentDiffAsset, _logger);
             sceneHistory = new(root.Q("scene-logs"), this, sceneCommitAsset);
 
             root.Q("toolbar-showlog").RegisterCallback<ClickEvent>(ClickToolbarShowLogButton);
 
-            _logger ??= new BufferedLogger(new UnityLogger(), true);
 
             DrawHeader();
         }

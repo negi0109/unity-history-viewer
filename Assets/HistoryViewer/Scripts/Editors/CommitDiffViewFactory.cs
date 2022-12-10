@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 using Negi0109.HistoryViewer.Models;
+using Negi0109.HistoryViewer.Interfaces;
 using UnityEngine.UIElements;
 
 namespace Negi0109.HistoryViewer.Editors
@@ -12,11 +13,13 @@ namespace Negi0109.HistoryViewer.Editors
     {
         private VisualTreeAsset _asset;
         private CommitComponentDiffViewFactory _componentDiffViewFactory;
+        private Interfaces.ILogger _logger;
 
-        public CommitDiffViewFactory(VisualTreeAsset asset, CommitComponentDiffViewFactory componentDiffViewFactory)
+        public CommitDiffViewFactory(VisualTreeAsset asset, CommitComponentDiffViewFactory componentDiffViewFactory, Interfaces.ILogger logger = null)
         {
             _asset = asset;
             _componentDiffViewFactory = componentDiffViewFactory;
+            _logger = logger;
         }
 
         public void Replace(ObjectCommitDiff diff, VisualElement child)
@@ -54,7 +57,7 @@ namespace Negi0109.HistoryViewer.Editors
             {
                 foreach (var component in diff.Diff.components)
                 {
-                    components.Add(_componentDiffViewFactory.Build(component));
+                    components.Add(_componentDiffViewFactory.Build(component, diff));
                 }
             }
             else
